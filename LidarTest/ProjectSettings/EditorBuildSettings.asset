@@ -9,5 +9,5 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects:
-    com.unity.xr.arkit.PlayerSettings: {fileID: 11400000, guid: 7651a33ae4ea0c3449e9d35423669944, type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 7651a33ae4ea0c3449e9d35423669944, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: cf546fbb6a5c53a4aade5f146cf24e02, type: 2}
