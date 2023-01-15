@@ -44,3 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb75bd041ca954b0eaedd74a05d34fa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obj: {fileID: 7003169057441043771, guid: bd4f1b491025b43cbac99d32a5db2172, type: 3}
+  player: {fileID: 0}
+  arCam: {fileID: 0}
+  meshManager: {fileID: 0}
+  playUI: {fileID: 0}
+  scanUI: {fileID: 0}
+  level:
+  - {fileID: 4697739147667987784, guid: b86cf40a130ec4141b4a8863ad9f5b58, type: 3}
+  - {fileID: 4697739147667987784, guid: 06ee8064d861e49d1b62354cc6febb12, type: 3}
+  debug: 0

@@ -20,10 +20,18 @@ public class PlayerControlls : MonoBehaviour
     [SerializeField] float jumpHeight = 3f;
     private float velocityY;
     private bool jumped = false;
+
+    [Header("Screens")]
+    [SerializeField] GameObject endscreen;
     // Start is called before the first frame update 
     void Awake()
     {
         controller = GetComponent<CharacterController>();
+    }
+
+    private void Start()
+    {
+        endscreen.SetActive(false);
     }
 
     private void Update()
@@ -67,5 +75,13 @@ public class PlayerControlls : MonoBehaviour
     public void Jump()
     {
         jumped = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag.Equals("Goal"))
+        {
+            endscreen.SetActive(true);
+        }
     }
 }
