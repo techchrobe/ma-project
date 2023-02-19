@@ -13,6 +13,8 @@ public class PlayerControlls : MonoBehaviour
     float currentAngle;
     float currentAngleVelocity;
 
+    [SerializeField] float deathDistance = 100;
+
     [Header("Gravity")]
     [SerializeField] float gravity = 9.8f;
     [SerializeField] float gravityMultiplier = 2;
@@ -23,6 +25,8 @@ public class PlayerControlls : MonoBehaviour
 
     [Header("Screens")]
     [SerializeField] GameObject endscreen;
+
+
     // Start is called before the first frame update 
     void Awake()
     {
@@ -38,6 +42,7 @@ public class PlayerControlls : MonoBehaviour
     {
         HandleMovement();
         HandleGravityAndJump();
+        CheckDeath();
     }
 
     private void HandleMovement()
@@ -54,7 +59,7 @@ public class PlayerControlls : MonoBehaviour
         }
     }
 
-    void HandleGravityAndJump()
+    private void HandleGravityAndJump()
     {
         if (controller.isGrounded && velocityY < 0f)
             velocityY = groundedGravity;
@@ -65,6 +70,14 @@ public class PlayerControlls : MonoBehaviour
         }
         velocityY -= gravity * gravityMultiplier * Time.deltaTime;
         controller.Move(Vector3.up * velocityY * Time.deltaTime);
+    }
+
+    private void CheckDeath()
+    {
+        if (transform.position.y < (cam.transform.position.y - deathDistance))
+        {
+            GameManager.Instance.ResetPlayer();
+        }
     }
 
     public void Reset()
