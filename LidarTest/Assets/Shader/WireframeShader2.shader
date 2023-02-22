@@ -20,14 +20,14 @@ Shader "Unlit/WireframeShader2"
                 {
                     float4 vertex : POSITION;
                     float2 uv : TEXCOORD0;
-                    float4 color : Color;
+                    float4 color : COLOR0;
                 };
 
                 struct v2f
                 {
                     float2 uv : TEXCOORD0;
                     float4 vertex : POSITION;
-                    float4 color : Color;
+                    float4 color : COLOR0;
                 };
 
                 fixed4 lineColor;

@@ -573,6 +573,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   simplePlatform: {fileID: 7066937936447288141, guid: 8ab21c918dbd4499591bf9ea480a6cfa, type: 3}
   debugObj: {fileID: 7003169057441043771, guid: bd4f1b491025b43cbac99d32a5db2172, type: 3}
+  goal: {fileID: 1691229009120234105, guid: d9fec72511f5e4fbf8ab885b9de10541, type: 3}
 --- !u!4 &327682025
 Transform:
   m_ObjectHideFlags: 0

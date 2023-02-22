@@ -9,10 +9,12 @@ public class LevelGenerator : MonoBehaviour
     private ARMeshManager meshManager;
     [SerializeField] GameObject simplePlatform;
     [SerializeField] GameObject debugObj;
+    [SerializeField] GameObject goal;
 
     private List<GameObject> centers = new List<GameObject>();
 
     private Vector3 startPosition;
+    private Vector3 endPosition;
 
     public Vector3 StartPosition { get => startPosition; }
 
@@ -40,21 +42,65 @@ public class LevelGenerator : MonoBehaviour
 
         // Place start position
         Vector3 position = arCam.transform.position + arCam.transform.forward;
-        RaycastHit hit;
-        if(Physics.SphereCast(position, 0.1f, Vector3.down, out hit))
-        {
-            Debug.Log(hit.distance);
-            Debug.Log(hit.collider.tag);
-            position.y = position.y - (hit.distance - 0.1f);
-        }
+        position.y = position.y - (DistanceToGround(position) - 0.1f);
 
         GameObject start = Instantiate(simplePlatform, position, transform.rotation);
         startPosition = start.transform.position + new Vector3(0, 0.2f, 0);
 
         // Place end postion
-        // TODO
+        GameObject farthestMesh = GetFarthest(startPosition, centers);
+        endPosition = farthestMesh.transform.position;
+        float ceilingDistance = DistanceToCeiling(endPosition);
+        if(ceilingDistance < 0.7f)
+        {
+            endPosition.y = endPosition.y - (0.7f - ceilingDistance);
+        }
+
+        Instantiate(simplePlatform, endPosition, transform.rotation);
+        Instantiate(goal, endPosition + new Vector3(0, 0.1f, 0), transform.rotation);
+
 
         // Place platforms between start and end position
         // TODO
+    }
+
+    private float DistanceToGround(Vector3 position)
+    {
+        RaycastHit hit;
+        if (Physics.SphereCast(position, 0.1f, Vector3.down, out hit))
+        {
+            Debug.Log(hit.distance);
+            Debug.Log(hit.collider.tag);
+            return hit.distance;
+        }
+        return float.MaxValue;
+    }
+
+    private float DistanceToCeiling(Vector3 position)
+    {
+        RaycastHit hit;
+        if (Physics.SphereCast(position, 0.1f, Vector3.up, out hit))
+        {
+            Debug.Log(hit.distance);
+            Debug.Log(hit.collider.tag);
+            return hit.distance;
+        }
+        return float.MaxValue;
+    }
+
+    private GameObject GetFarthest(Vector3 startPoint, List<GameObject> gos)
+    {
+        GameObject farthest = gos[0];
+        float maxDistance = 0;
+        foreach(GameObject i in gos)
+        {
+            float distance = Vector3.Distance(startPoint, i.transform.position);
+            if(distance > maxDistance)
+            {
+                maxDistance = distance;
+                farthest = i;
+            }
+        }
+        return farthest;
     }
 }
