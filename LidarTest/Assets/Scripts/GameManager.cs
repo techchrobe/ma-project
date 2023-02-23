@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         playUI.SetActive(false);
-        generator.Init(arCam, meshManager);
+        generator.Init(arCam, meshManager, player.GetComponent<PlayerControlls>().JumpHeight);
         player.SetActive(false);
     }
 

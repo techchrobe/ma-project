@@ -19,12 +19,14 @@ public class PlayerControlls : MonoBehaviour
     [SerializeField] float gravity = 9.8f;
     [SerializeField] float gravityMultiplier = 2;
     [SerializeField] float groundedGravity = -0.5f;
-    [SerializeField] float jumpHeight = 3f;
+    [SerializeField] float jumpHeight = 0.8f;
     private float velocityY;
     private bool jumped = false;
 
     [Header("Screens")]
     [SerializeField] GameObject endscreen;
+
+    public float JumpHeight { get => jumpHeight; }
 
 
     // Start is called before the first frame update 

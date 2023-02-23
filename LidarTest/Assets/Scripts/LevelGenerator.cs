@@ -12,16 +12,18 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] GameObject goal;
 
     private List<GameObject> centers = new List<GameObject>();
+    private float playerJumpHeight = 0f;
 
     private Vector3 startPosition;
     private Vector3 endPosition;
 
     public Vector3 StartPosition { get => startPosition; }
 
-    public void Init(GameObject cam, ARMeshManager manager)
+    public void Init(GameObject cam, ARMeshManager manager, float jumpHeight)
     {
         arCam = cam;
         meshManager = manager;
+        playerJumpHeight = jumpHeight/2;
     }
 
     public void GenerateLevel()
@@ -59,9 +61,52 @@ public class LevelGenerator : MonoBehaviour
         Instantiate(simplePlatform, endPosition, transform.rotation);
         Instantiate(goal, endPosition + new Vector3(0, 0.1f, 0), transform.rotation);
 
-
         // Place platforms between start and end position
-        // TODO
+        int platformCount = 0;
+        Vector3 lastPlatformPosition = startPosition;
+        while (Vector3.Distance(lastPlatformPosition, endPosition) > playerJumpHeight && platformCount < 20)
+        {
+            Vector3 dirToGoal = (endPosition - lastPlatformPosition).normalized;
+
+            float xPos = Random.Range(0.1f, playerJumpHeight) * (Random.Range(0, 2) == 0 ? 1 : -1);
+            float yPos = Random.Range(0.1f, playerJumpHeight) * (Random.Range(0, 2) == 0 ? 1 : -1);
+            float zPos = Random.Range(0.1f, playerJumpHeight) * (Random.Range(0, 2) == 0 ? 1 : -1);
+
+            if ((dirToGoal.x < 0 && xPos > 0)
+                || (dirToGoal.x > 0 && xPos < 0))
+            {
+                xPos *= -1;
+            }
+            if ((dirToGoal.y < 0 && yPos > 0)
+                || (dirToGoal.y > 0 && yPos < 0))
+            {
+                yPos *= -1;
+            }
+            if ((dirToGoal.z < 0 && zPos > 0)
+                || (dirToGoal.z > 0 && zPos < 0))
+            {
+                zPos *= -1;
+            }
+
+            Vector3 newPlatformPosition = new Vector3(xPos, yPos, zPos) + lastPlatformPosition + (dirToGoal / 50);
+            // Don't place to close to ceiling
+            float boundDistance = DistanceToCeiling(newPlatformPosition);
+            if (boundDistance < 0.7f)
+            {
+                newPlatformPosition.y = newPlatformPosition.y - (0.7f - boundDistance);
+            }
+
+            // Don't place to close to ground
+            boundDistance = DistanceToGround(newPlatformPosition);
+            if (boundDistance < 0.1f)
+            {
+                newPlatformPosition.y = newPlatformPosition.y - (boundDistance - 0.1f);
+            }
+
+            Instantiate(simplePlatform, newPlatformPosition, transform.rotation);
+            lastPlatformPosition = newPlatformPosition;
+            platformCount++;
+        }
     }
 
     private float DistanceToGround(Vector3 position)
