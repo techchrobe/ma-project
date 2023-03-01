@@ -7,23 +7,25 @@ public class PlayerMarker : MonoBehaviour {
 
     [SerializeField] GameObject player;
     private Image uiImage;
+    private Camera cam;
 
     private void Start() {
         uiImage = GetComponent<Image>();
+        cam = Camera.main;
     }
 
     private void Update() {
         if(player != null) {
-            Plane[] planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+            Plane[] planes = GeometryUtility.CalculateFrustumPlanes(cam);
             if(GeometryUtility.TestPlanesAABB(planes, player.GetComponent<Collider>().bounds)) {
                 uiImage.enabled = false;
             }
             else {
-                Vector3 pos = CalculateViewPosition(player.transform.position,  Camera.main);
+                Vector3 pos = cam.WorldToViewportPoint(player.transform.position);
 
                 Transform camTransform = Camera.main.transform;
 
-                // Check if target is behind camera
+                // Check if player is behind camera
                 if(Vector3.Dot(player.transform.position - camTransform.position, camTransform.forward) < 0) {
                     pos.x = pos.x < 0.5 ? 1 : 0;
                     pos.y = 0;
@@ -33,17 +35,9 @@ public class PlayerMarker : MonoBehaviour {
                 pos.y = Mathf.Clamp(pos.y, padding.y, 1.0f - padding.y);
                 pos.z = 0.0f;
 
-                transform.position = CalculateScreenPosition(pos,  Camera.main);
+                transform.position = cam.ViewportToScreenPoint(pos);
                 uiImage.enabled = true;
             }
         }
-    }
-
-    private static Vector3 CalculateScreenPosition(Vector3 viewPos, Camera camera) {
-        return camera.ViewportToScreenPoint(viewPos);
-    }
-
-    private static Vector3 CalculateViewPosition(Vector3 worldPos, Camera camera) {
-        return camera.WorldToViewportPoint(worldPos);
     }
 }
