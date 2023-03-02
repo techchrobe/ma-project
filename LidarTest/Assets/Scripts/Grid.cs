@@ -9,7 +9,7 @@ public class Grid : MonoBehaviour {
     private Mesh mesh;
     private Vector3[] vertices;
 
-    private void Awake() {
+    private void Update() {
         if(newMesh)
             Generate();
         else
@@ -18,32 +18,35 @@ public class Grid : MonoBehaviour {
 
     private void GenerateExisting() {
         mesh = GetComponent<MeshFilter>().mesh;
-
-        Color[] coords = new[]
+        if(mesh != null)
         {
-            new Color(1, 0, 0),
-            new Color(0, 1, 0),
-            new Color(0, 0, 1),
-        };
+            Color[] coords = new[]
+            {
+                new Color(1, 0, 0),
+                new Color(0, 1, 0),
+                new Color(0, 0, 1),
+            };
 
-        vertices = mesh.vertices;
-        Color32[] vertexColors = new Color32[vertices.Length];
+            vertices = mesh.vertices;
+            Color32[] vertexColors = new Color32[vertices.Length];
 
-        vertexColors[0] = coords[1];
-        vertexColors[1] = coords[0];
-        vertexColors[2] = coords[0];
-        vertexColors[3] = coords[2];
+            //vertexColors[0] = coords[1];
+            //vertexColors[1] = coords[0];
+            //vertexColors[2] = coords[0];
+            //vertexColors[3] = coords[2];
 
-        for(int i = 0; i < vertices.Length; i += 3) {
-            vertexColors[i] = coords[0];
-            if(i + 1 < vertices.Length)
-                vertexColors[i + 1] = coords[1];
-            if(i + 2 < vertices.Length)
-                vertexColors[i + 2] = coords[2];
+            for (int i = 0; i < vertices.Length; i += 3)
+            {
+                vertexColors[i] = coords[0];
+                if (i + 1 < vertices.Length)
+                    vertexColors[i + 1] = coords[1];
+                if (i + 2 < vertices.Length)
+                    vertexColors[i + 2] = coords[2];
+            }
+
+            mesh.colors32 = vertexColors;
+            mesh.RecalculateNormals();
         }
-
-        mesh.colors32 = vertexColors;
-        mesh.RecalculateNormals();
     }
 
     [ContextMenu("generate")]

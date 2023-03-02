@@ -15,7 +15,7 @@ public class PlayerMarker : MonoBehaviour {
     }
 
     private void Update() {
-        if (player != null) {
+        if (player != null && player.active) {
             Plane[] planes = GeometryUtility.CalculateFrustumPlanes(cam);
             if (GeometryUtility.TestPlanesAABB(planes, player.GetComponent<Collider>().bounds)) {
                 Physics.Raycast(cam.transform.position, (player.transform.position - cam.transform.position), out RaycastHit hit);

@@ -58,7 +58,7 @@ Shader "Unlit/WireframeShader3"
                     // Set alpha to 1 if within the threshold, else 0.
                     float alpha = step(closest, lineWidth);
 
-                    return i.color;
+                    //return i.color;
 
                     if (closest <= lineWidth) {
                         return lineColor;
