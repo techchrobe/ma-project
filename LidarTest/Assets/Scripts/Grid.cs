@@ -4,12 +4,46 @@ using UnityEngine;
 public class Grid : MonoBehaviour {
 
     public int xSize, ySize;
+    public bool newMesh = false;
 
     private Mesh mesh;
     private Vector3[] vertices;
 
     private void Awake() {
-        Generate();
+        if(newMesh)
+            Generate();
+        else
+            GenerateExisting();
+    }
+
+    private void GenerateExisting() {
+        mesh = GetComponent<MeshFilter>().mesh;
+
+        Color[] coords = new[]
+        {
+            new Color(1, 0, 0),
+            new Color(0, 1, 0),
+            new Color(0, 0, 1),
+        };
+
+        vertices = mesh.vertices;
+        Color32[] vertexColors = new Color32[vertices.Length];
+
+        vertexColors[0] = coords[1];
+        vertexColors[1] = coords[0];
+        vertexColors[2] = coords[0];
+        vertexColors[3] = coords[2];
+
+        for(int i = 0; i < vertices.Length; i += 3) {
+            vertexColors[i] = coords[0];
+            if(i + 1 < vertices.Length)
+                vertexColors[i + 1] = coords[1];
+            if(i + 2 < vertices.Length)
+                vertexColors[i + 2] = coords[2];
+        }
+
+        mesh.colors32 = vertexColors;
+        mesh.RecalculateNormals();
     }
 
     [ContextMenu("generate")]

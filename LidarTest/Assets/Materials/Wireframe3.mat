@@ -76,7 +76,7 @@ Material:
     - _Width: 7.7
     - _WireframeWidth: 0.05
     - _ZWrite: 1
-    - lineWidth: 0.06
+    - lineWidth: 0.02
     m_Colors:
     - WireframeFrontColour: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
