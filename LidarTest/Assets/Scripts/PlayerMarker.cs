@@ -15,10 +15,23 @@ public class PlayerMarker : MonoBehaviour {
     }
 
     private void Update() {
-        if(player != null) {
+        if (player != null) {
             Plane[] planes = GeometryUtility.CalculateFrustumPlanes(cam);
-            if(GeometryUtility.TestPlanesAABB(planes, player.GetComponent<Collider>().bounds)) {
-                uiImage.enabled = false;
+            if (GeometryUtility.TestPlanesAABB(planes, player.GetComponent<Collider>().bounds)) {
+                Physics.Raycast(cam.transform.position, (player.transform.position - cam.transform.position), out RaycastHit hit);
+                if (hit.collider != null && hit.collider.tag.Equals("Player")) {
+                    uiImage.enabled = false;
+                }
+                else {
+                    Vector3 pos = cam.WorldToViewportPoint(player.transform.position);
+
+                    pos.x = Mathf.Clamp(pos.x, padding.x, 1.0f - padding.x);
+                    pos.y = Mathf.Clamp(pos.y, padding.y, 1.0f - padding.y);
+                    pos.z = 0.0f;
+
+                    transform.position = cam.ViewportToScreenPoint(pos);
+                    uiImage.enabled = true;
+                }
             }
             else {
                 Vector3 pos = cam.WorldToViewportPoint(player.transform.position);
