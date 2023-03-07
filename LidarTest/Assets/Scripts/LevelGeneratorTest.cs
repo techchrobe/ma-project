@@ -7,10 +7,11 @@ public class LevelGeneratorTest : MonoBehaviour
     [SerializeField] GameObject debugObj;
     [SerializeField] GameObject goal;
     [SerializeField] float stepDistance = 0.8f;
+    [SerializeField] float distanceToWall = 0.2f;
 
 
     private List<GameObject> centers = new List<GameObject>();
-    private float playerJumpHeight = 0.8f;
+    private float playerJumpHeight = 0.4f;
 
     public GameObject startPosition;
     public GameObject endPosition;
@@ -31,18 +32,21 @@ public class LevelGeneratorTest : MonoBehaviour
 
     public void Start()
     {
+        //Vector3 end = FindEndPosition(startPosition.transform.position);
+        Vector3 end = endPosition.transform.position;
+
         // Find path between Start and End position
         List<NodeRecord> open = new List<NodeRecord>();
         List<NodeRecord> closed = new List<NodeRecord>();
 
-        open.Add(new NodeRecord(new Node(startPosition.transform.position, null), null, 0, Vector3.Distance(startPosition.transform.position, endPosition.transform.position)));
+        open.Add(new NodeRecord(new Node(startPosition.transform.position, null), null, 0, Vector3.Distance(startPosition.transform.position, end)));
         NodeRecord current = open[0];
         while (open.Count != 0)
         {
             current = open[0];
 
-            // if current node is close enuogh to the goal stop
-            if (Vector3.Distance(current.Node.getPosition(), endPosition.transform.position) <= stepDistance) {
+            // if current node is close enough to the goal stop
+            if (Vector3.Distance(current.Node.Position, end) <= stepDistance) {
                 break;
             }
 
@@ -79,7 +83,7 @@ public class LevelGeneratorTest : MonoBehaviour
                     }
                     else {
                         record = new NodeRecord(neighbour, current, endNodeCost, endNodeHeuristic);
-                        endNodeHeuristic = Vector3.Distance(neighbour.getPosition(), endPosition.transform.position);
+                        endNodeHeuristic = Vector3.Distance(neighbour.Position, endPosition.transform.position);
                     }
 
                     // update node record
@@ -98,58 +102,103 @@ public class LevelGeneratorTest : MonoBehaviour
         }
 
         // placce platforms on path
-        while(current.Node.getPosition() != startPosition.transform.position) {
-            Instantiate(simplePlatform, current.Node.getPosition(), transform.rotation);
+        Vector3 lastPosition = startPosition.transform.position;
+        while(current.Node.Position != startPosition.transform.position) {
+            Vector3 platformPosition = current.Node.Position;
+
+            // set y position
+            float yPos = Random.Range(-0.4f, 0.4f);
+            platformPosition.y = lastPosition.y + yPos;
+
+            float groundDistance = DistanceToGround(platformPosition);
+
+            if(groundDistance == float.MaxValue) {
+                platformPosition.y = lastPosition.y + (yPos * -1);
+                groundDistance = DistanceToGround(platformPosition);
+            }
+            // Don't place to close to ground
+            if(groundDistance < 0.1f) {
+                platformPosition.y = platformPosition.y - (groundDistance - 0.1f);
+            }
+
+            Instantiate(simplePlatform, platformPosition, transform.rotation);
+            lastPosition = platformPosition;
             current = current.Connection;
         }
     }
 
+    Vector3 FindEndPosition(Vector3 startPosition) {
+        Vector3 endPosition = startPosition;
+        // ToDo
+        return endPosition;
+    }
+
     NodeRecord QueueContainsNode(List<NodeRecord> list, Node n) {
         foreach(NodeRecord nr in list) {
-            if(nr.Node.getPosition() == n.getPosition())
+            if(nr.Node.Position == n.Position)
                 return nr;
         }
         return null;
     }
 
-    Node GetNeighbour(Direction direction, Node lastPosition)
-	{
-		switch (direction)
-		{
-		case Direction.Top:
-			return new Node(lastPosition.getPosition() + new Vector3(0, 0, stepDistance), lastPosition);
-		case Direction.TopRight:
-            return new Node(lastPosition.getPosition() + new Vector3(stepDistance, 0, stepDistance), lastPosition);
-        case Direction.Right:
-			return new Node(lastPosition.getPosition() + new Vector3(stepDistance, 0, 0), lastPosition);
-        case Direction.BottomRight:
-			return new Node(lastPosition.getPosition() + new Vector3(stepDistance, 0, -stepDistance), lastPosition);
-        case Direction.Bottom:
-			return new Node(lastPosition.getPosition() + new Vector3(0, 0, -stepDistance), lastPosition);
-        case Direction.BottomLeft:
-			return new Node(lastPosition.getPosition() + new Vector3(-stepDistance, 0, -stepDistance), lastPosition);
-        case Direction.Left:
-			return new Node(lastPosition.getPosition() + new Vector3(-stepDistance, 0, 0), lastPosition);
-        case Direction.TopLeft:
-			return new Node(lastPosition.getPosition() + new Vector3(-stepDistance, 0, stepDistance), lastPosition);
+    Node GetNeighbour(Direction direction, Node lastPosition) {
+        switch(direction) {
+            case Direction.Top:
+                return new Node(lastPosition.Position + new Vector3(0, 0, stepDistance), lastPosition);
+            case Direction.TopRight:
+                return new Node(lastPosition.Position + new Vector3(stepDistance/2, 0, stepDistance / 2), lastPosition);
+            case Direction.Right:
+                return new Node(lastPosition.Position + new Vector3(stepDistance, 0, 0), lastPosition);
+            case Direction.BottomRight:
+                return new Node(lastPosition.Position + new Vector3(stepDistance / 2, 0, -stepDistance / 2), lastPosition);
+            case Direction.Bottom:
+                return new Node(lastPosition.Position + new Vector3(0, 0, -stepDistance), lastPosition);
+            case Direction.BottomLeft:
+                return new Node(lastPosition.Position + new Vector3(-stepDistance / 2, 0, -stepDistance / 2), lastPosition);
+            case Direction.Left:
+                return new Node(lastPosition.Position + new Vector3(-stepDistance, 0, 0), lastPosition);
+            case Direction.TopLeft:
+                return new Node(lastPosition.Position + new Vector3(-stepDistance / 2, 0, stepDistance / 2), lastPosition);
         }
         return lastPosition;
-	}
+    }
+
 
     bool IsNodeValid(Node n) {
         RaycastHit hit;
-        if (Physics.SphereCast(n.getPosition(), 0.1f, Vector3.down, out hit)) {
+        if(Physics.SphereCast(n.Position, 0.1f, Vector3.down, out hit)) {
 
-            // move platform a bit ot the side if it's to close to a wall
-            if (Physics.Raycast(n.getPosition(), Vector3.left, 0.35f)
-                || Physics.Raycast(n.getPosition(), Vector3.right, 0.35f)
-                || Physics.Raycast(n.getPosition(), Vector3.forward, 0.35f)
-                || Physics.Raycast(n.getPosition(), Vector3.back, 0.35f)) {
+            // move platform a bit to the side if it's to close to a wall
+            if(Physics.Raycast(n.Position, Vector3.left, out hit, distanceToWall)) {
+                n.Position += new Vector3(distanceToWall - hit.distance, 0, 0);
+            }
+
+            if(Physics.Raycast(n.Position, Vector3.right, out hit, distanceToWall)) {
+                n.Position -= new Vector3(distanceToWall - hit.distance, 0, 0);
+            }
+
+            if(Physics.Raycast(n.Position, Vector3.forward, out hit, distanceToWall)) {
+                n.Position -= new Vector3(0, 0, distanceToWall - hit.distance);
+            }
+
+            if(Physics.Raycast(n.Position, Vector3.back, out hit, distanceToWall)) {
+                n.Position += new Vector3(0, 0, distanceToWall - hit.distance);
+            }
+
+            if(!Physics.SphereCast(n.Position, 0.1f, Vector3.down, out hit)) {
                 return false;
             }
             return true;
         }
         return false;
+    }
+
+    private float DistanceToGround(Vector3 position) {
+        RaycastHit hit;
+        if(Physics.SphereCast(position, 0.1f, Vector3.down, out hit)) {
+            return hit.distance;
+        }
+        return float.MaxValue;
     }
 
     private float DistanceToCeiling(Vector3 position)
