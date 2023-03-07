@@ -11,7 +11,7 @@ public class Node {
         this.previousNode = previousNode;
     }
 
-    public Vector3 getPosition() { return position; }
+    public Vector3 Position { get => position; set => position = value; }
     public Node getPreviousNode() { return previousNode; }
 }
 

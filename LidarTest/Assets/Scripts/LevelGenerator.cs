@@ -86,7 +86,7 @@ public class LevelGenerator : MonoBehaviour
             current = open[0];
 
             // if current node is close enuogh to the goal stop
-            if(Vector3.Distance(current.Node.getPosition(), endPosition) <= stepDistance) {
+            if(Vector3.Distance(current.Node.Position, endPosition) <= stepDistance) {
                 break;
             }
 
@@ -123,7 +123,7 @@ public class LevelGenerator : MonoBehaviour
                     }
                     else {
                         record = new NodeRecord(neighbour, current, endNodeCost, endNodeHeuristic);
-                        endNodeHeuristic = Vector3.Distance(neighbour.getPosition(), endPosition);
+                        endNodeHeuristic = Vector3.Distance(neighbour.Position, endPosition);
                     }
 
                     // update node record
@@ -142,15 +142,15 @@ public class LevelGenerator : MonoBehaviour
         }
 
         // placce platforms on path
-        while(current.Node.getPosition() != startPosition) {
-            Instantiate(simplePlatform, current.Node.getPosition(), transform.rotation);
+        while(current.Node.Position != startPosition) {
+            Instantiate(simplePlatform, current.Node.Position, transform.rotation);
             current = current.Connection;
         }
     }
 
     NodeRecord QueueContainsNode(List<NodeRecord> list, Node n) {
         foreach(NodeRecord nr in list) {
-            if(nr.Node.getPosition() == n.getPosition())
+            if(nr.Node.Position == n.Position)
                 return nr;
         }
         return null;
@@ -159,35 +159,35 @@ public class LevelGenerator : MonoBehaviour
     Node GetNeighbour(Direction direction, Node lastPosition) {
         switch(direction) {
             case Direction.Top:
-                return new Node(lastPosition.getPosition() + new Vector3(0, 0, stepDistance), lastPosition);
+                return new Node(lastPosition.Position + new Vector3(0, 0, stepDistance), lastPosition);
             case Direction.TopRight:
-                return new Node(lastPosition.getPosition() + new Vector3(stepDistance, 0, stepDistance), lastPosition);
+                return new Node(lastPosition.Position + new Vector3(stepDistance, 0, stepDistance), lastPosition);
             case Direction.Right:
-                return new Node(lastPosition.getPosition() + new Vector3(stepDistance, 0, 0), lastPosition);
+                return new Node(lastPosition.Position + new Vector3(stepDistance, 0, 0), lastPosition);
             case Direction.BottomRight:
-                return new Node(lastPosition.getPosition() + new Vector3(stepDistance, 0, -stepDistance), lastPosition);
+                return new Node(lastPosition.Position + new Vector3(stepDistance, 0, -stepDistance), lastPosition);
             case Direction.Bottom:
-                return new Node(lastPosition.getPosition() + new Vector3(0, 0, -stepDistance), lastPosition);
+                return new Node(lastPosition.Position + new Vector3(0, 0, -stepDistance), lastPosition);
             case Direction.BottomLeft:
-                return new Node(lastPosition.getPosition() + new Vector3(-stepDistance, 0, -stepDistance), lastPosition);
+                return new Node(lastPosition.Position + new Vector3(-stepDistance, 0, -stepDistance), lastPosition);
             case Direction.Left:
-                return new Node(lastPosition.getPosition() + new Vector3(-stepDistance, 0, 0), lastPosition);
+                return new Node(lastPosition.Position + new Vector3(-stepDistance, 0, 0), lastPosition);
             case Direction.TopLeft:
-                return new Node(lastPosition.getPosition() + new Vector3(-stepDistance, 0, stepDistance), lastPosition);
+                return new Node(lastPosition.Position + new Vector3(-stepDistance, 0, stepDistance), lastPosition);
         }
         return lastPosition;
     }
 
     bool IsNodeValid(Node n) {
         RaycastHit hit;
-        if(Physics.SphereCast(n.getPosition(), 0.1f, Vector3.down, out hit)) {
-
+        if(Physics.SphereCast(n.Position, 0.1f, Vector3.down, out hit)) {
             // move platform a bit ot the side if it's to close to a wall
-            if(Physics.Raycast(n.getPosition(), Vector3.left, 0.35f)
-                || Physics.Raycast(n.getPosition(), Vector3.right, 0.35f)
-                || Physics.Raycast(n.getPosition(), Vector3.forward, 0.35f)
-                || Physics.Raycast(n.getPosition(), Vector3.back, 0.35f)) {
+            if(Physics.Raycast(n.Position, Vector3.left, 0.35f)
+                || Physics.Raycast(n.Position, Vector3.right, 0.35f)
+                || Physics.Raycast(n.Position, Vector3.forward, 0.35f)
+                || Physics.Raycast(n.Position, Vector3.back, 0.35f)) {
                 return false;
+
             }
             return true;
         }
