@@ -97,6 +97,7 @@ public class LevelGeneratorTest : MonoBehaviour
             }
         }
 
+        // placce platforms on path
         while(current.Node.getPosition() != startPosition.transform.position) {
             Instantiate(simplePlatform, current.Node.getPosition(), transform.rotation);
             current = current.Connection;
@@ -138,6 +139,14 @@ public class LevelGeneratorTest : MonoBehaviour
     bool IsNodeValid(Node n) {
         RaycastHit hit;
         if (Physics.SphereCast(n.getPosition(), 0.1f, Vector3.down, out hit)) {
+
+            // move platform a bit ot the side if it's to close to a wall
+            if (Physics.Raycast(n.getPosition(), Vector3.left, 0.35f)
+                || Physics.Raycast(n.getPosition(), Vector3.right, 0.35f)
+                || Physics.Raycast(n.getPosition(), Vector3.forward, 0.35f)
+                || Physics.Raycast(n.getPosition(), Vector3.back, 0.35f)) {
+                return false;
+            }
             return true;
         }
         return false;
