@@ -11,6 +11,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] GameObject debugObj;
     [SerializeField] GameObject goal;
     [SerializeField] float stepDistance = 0.8f;
+    [SerializeField] float distanceToWall = 0.2f;
 
     private List<GameObject> centers = new List<GameObject>();
     private float playerJumpHeight = 0f;
@@ -65,18 +66,17 @@ public class LevelGenerator : MonoBehaviour
 
         // Place end postion
         GameObject farthestMesh = GetFarthest(startPosition, centers);
-        endPosition = farthestMesh.transform.position;
-        float ceilingDistance = DistanceToCeiling(endPosition);
-        if(ceilingDistance < 0.7f)
-        {
-            endPosition.y = endPosition.y - (0.7f - ceilingDistance);
-        }
+        endPosition = FindEndPosition(startPosition);
 
         Instantiate(simplePlatform, endPosition, transform.rotation);
         Instantiate(goal, endPosition + new Vector3(0, 0.1f, 0), transform.rotation);
 
         // Place platforms between start and end position
         // Find path between Start and End position
+        AStar(startPosition, endPosition);
+    }
+
+    private void AStar(Vector3 startPosition, Vector3 endPosition) {
         List<NodeRecord> open = new List<NodeRecord>();
         List<NodeRecord> closed = new List<NodeRecord>();
 
@@ -85,7 +85,7 @@ public class LevelGenerator : MonoBehaviour
         while(open.Count != 0) {
             current = open[0];
 
-            // if current node is close enuogh to the goal stop
+            // if current node is close enough to the goal stop
             if(Vector3.Distance(current.Node.Position, endPosition) <= stepDistance) {
                 break;
             }
@@ -142,8 +142,27 @@ public class LevelGenerator : MonoBehaviour
         }
 
         // placce platforms on path
+        Vector3 lastPosition = startPosition;
         while(current.Node.Position != startPosition) {
-            Instantiate(simplePlatform, current.Node.Position, transform.rotation);
+            Vector3 platformPosition = current.Node.FixedPosition;
+
+            // set y position
+            float yPos = Random.Range(-0.4f, 0.4f);
+            platformPosition.y = lastPosition.y + yPos;
+
+            float groundDistance = DistanceToGround(platformPosition);
+
+            if(groundDistance == float.MaxValue) {
+                platformPosition.y = lastPosition.y + (yPos * -1);
+                groundDistance = DistanceToGround(platformPosition);
+            }
+            // Don't place to close to ground
+            if(groundDistance < 0.1f) {
+                platformPosition.y = platformPosition.y - (groundDistance - 0.1f);
+            }
+
+            Instantiate(simplePlatform, platformPosition, transform.rotation);
+            lastPosition = platformPosition;
             current = current.Connection;
         }
     }
@@ -154,6 +173,34 @@ public class LevelGenerator : MonoBehaviour
                 return nr;
         }
         return null;
+    }
+
+    Vector3 FindEndPosition(Vector3 startPosition) {
+        Vector3 endPosition = startPosition;
+        // Do Flood fill and take last position as end position
+        Queue<FloodFillNode> positions = new Queue<FloodFillNode>();
+        List<Vector3> visited = new List<Vector3>();
+        float maxDistance = 0;
+        positions.Enqueue(new FloodFillNode(startPosition, maxDistance));
+        while(positions.Count != 0) {
+            FloodFillNode current = positions.Dequeue();
+
+            RaycastHit hit;
+            if(Physics.SphereCast(current.Position, 0.1f, Vector3.down, out hit) && !visited.Contains(current.Position)) {
+                if(current.Cost > maxDistance) {
+                    endPosition = current.Position;
+                    maxDistance = current.Cost;
+                }
+
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, stepDistance), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, -stepDistance), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(stepDistance, 0, 0), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(-stepDistance, 0, 0), current.Cost + 1));
+            }
+            visited.Add(current.Position);
+        }
+        Instantiate(goal, endPosition, goal.transform.rotation);
+        return endPosition;
     }
 
     Node GetNeighbour(Direction direction, Node lastPosition) {
@@ -180,14 +227,27 @@ public class LevelGenerator : MonoBehaviour
 
     bool IsNodeValid(Node n) {
         RaycastHit hit;
-        if(Physics.SphereCast(n.Position, 0.1f, Vector3.down, out hit)) {
-            // move platform a bit ot the side if it's to close to a wall
-            if(Physics.Raycast(n.Position, Vector3.left, 0.35f)
-                || Physics.Raycast(n.Position, Vector3.right, 0.35f)
-                || Physics.Raycast(n.Position, Vector3.forward, 0.35f)
-                || Physics.Raycast(n.Position, Vector3.back, 0.35f)) {
-                return false;
+        if(Physics.SphereCast(n.FixedPosition, 0.1f, Vector3.down, out hit)) {
 
+            // move platform a bit to the side if it's to close to a wall
+            if(Physics.SphereCast(n.FixedPosition, 0.05f, Vector3.left, out hit, distanceToWall)) {
+                n.FixedPosition += new Vector3(distanceToWall - hit.distance, 0, 0);
+            }
+
+            if(Physics.SphereCast(n.FixedPosition, 0.05f, Vector3.right, out hit, distanceToWall)) {
+                n.FixedPosition -= new Vector3(distanceToWall - hit.distance, 0, 0);
+            }
+
+            if(Physics.SphereCast(n.FixedPosition, 0.05f, Vector3.forward, out hit, distanceToWall)) {
+                n.FixedPosition -= new Vector3(0, 0, distanceToWall - hit.distance);
+            }
+
+            if(Physics.SphereCast(n.FixedPosition, 0.05f, Vector3.back, out hit, distanceToWall)) {
+                n.FixedPosition += new Vector3(0, 0, distanceToWall - hit.distance);
+            }
+
+            if(!Physics.SphereCast(n.FixedPosition, 0.05f, Vector3.down, out hit)) {
+                return false;
             }
             return true;
         }
