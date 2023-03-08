@@ -17,7 +17,7 @@ public class LevelGeneratorTest : MonoBehaviour
     public GameObject endPosition;
 
 
-    enum Direction {
+    public enum Direction {
         Top = 0,
 	    Right = 1,
 	    Bottom = 2,
@@ -28,25 +28,116 @@ public class LevelGeneratorTest : MonoBehaviour
 	    BottomRight = 7
     };
 
-    Direction[] All = { Direction.Top, Direction.Right, Direction.Bottom, Direction.Left, Direction.TopLeft, Direction.TopRight, Direction.BottomLeft, Direction.BottomRight };
+    public Direction[] All = { Direction.Top, Direction.Right, Direction.Bottom, Direction.Left, Direction.TopLeft, Direction.TopRight, Direction.BottomLeft, Direction.BottomRight };
 
     public void Start()
     {
-        //Vector3 end = FindEndPosition(startPosition.transform.position);
-        Vector3 end = endPosition.transform.position;
+        Vector3 end = FindEndPosition(startPosition.transform.position);
+        AStar(startPosition.transform.position, end);
+        //Vector3 end = endPosition.transform.position;
 
         // Find path between Start and End position
+        //List<NodeRecord> open = new List<NodeRecord>();
+        //List<NodeRecord> closed = new List<NodeRecord>();
+
+        //open.Add(new NodeRecord(new Node(startPosition.transform.position, null), null, 0, Vector3.Distance(startPosition.transform.position, end)));
+        //NodeRecord current = open[0];
+        //while(open.Count != 0) {
+        //    current = open[0];
+
+        //    // if current node is close enough to the goal stop
+        //    if(Vector3.Distance(current.Node.Position, end) <= stepDistance) {
+        //        break;
+        //    }
+
+        //    // add neighbours
+        //    foreach(Direction d in All) {
+        //        int cost = 1;
+        //        if((int)d >= 4) {
+        //            cost = 2;
+        //        }
+
+        //        Node neighbour = GetNeighbour(d, current.Node);
+        //        if(IsNodeValid(neighbour)) {
+
+        //            NodeRecord isInClosed = QueueContainsNode(closed, neighbour);
+        //            NodeRecord isInOpen = QueueContainsNode(open, neighbour);
+
+        //            float endNodeCost = current.CostSoFar + cost;
+        //            float endNodeHeuristic = 0.0f;
+
+        //            NodeRecord record;
+        //            if(isInClosed != null) {
+        //                record = isInClosed;
+        //                if(record.CostSoFar <= endNodeCost)
+        //                    continue;
+
+        //                closed.Remove(record);
+        //                endNodeHeuristic = record.EstimatedTotalCost - record.CostSoFar;
+        //            }
+        //            else if(isInOpen != null) {
+        //                record = isInOpen;
+        //                if(record.CostSoFar <= endNodeCost)
+        //                    continue;
+        //                endNodeHeuristic = record.EstimatedTotalCost - record.CostSoFar;
+        //            }
+        //            else {
+        //                record = new NodeRecord(neighbour, current, endNodeCost, endNodeHeuristic);
+        //                endNodeHeuristic = Vector3.Distance(neighbour.Position, endPosition.transform.position);
+        //            }
+
+        //            // update node record
+        //            record.CostSoFar = endNodeCost;
+        //            record.Connection = current;
+        //            record.EstimatedTotalCost = endNodeCost + endNodeHeuristic;
+
+        //            // reinsert to trigger sort
+        //            open.Add(record);
+        //            open.Sort();
+
+        //        }
+        //        open.Remove(current);
+        //        closed.Add(current);
+        //    }
+        //}
+
+        //// placce platforms on path
+        //Vector3 lastPosition = startPosition.transform.position;
+        //while(current.Node.Position != startPosition.transform.position) {
+        //    Vector3 platformPosition = current.Node.FixedPosition;
+
+        //    // set y position
+        //    float yPos = Random.Range(-0.4f, 0.4f);
+        //    platformPosition.y = lastPosition.y + yPos;
+
+        //    float groundDistance = DistanceToGround(platformPosition);
+
+        //    if(groundDistance == float.MaxValue) {
+        //        platformPosition.y = lastPosition.y + (yPos * -1);
+        //        groundDistance = DistanceToGround(platformPosition);
+        //    }
+        //    // Don't place to close to ground
+        //    if(groundDistance < 0.1f) {
+        //        platformPosition.y = platformPosition.y - (groundDistance - 0.1f);
+        //    }
+
+        //    Instantiate(simplePlatform, platformPosition, transform.rotation);
+        //    lastPosition = platformPosition;
+        //    current = current.Connection;
+        //}
+    }
+
+    private void AStar(Vector3 startPosition, Vector3 endPosition) {
         List<NodeRecord> open = new List<NodeRecord>();
         List<NodeRecord> closed = new List<NodeRecord>();
 
-        open.Add(new NodeRecord(new Node(startPosition.transform.position, null), null, 0, Vector3.Distance(startPosition.transform.position, end)));
+        open.Add(new NodeRecord(new Node(startPosition, null), null, 0, Vector3.Distance(startPosition, endPosition)));
         NodeRecord current = open[0];
-        while (open.Count != 0)
-        {
+        while(open.Count != 0) {
             current = open[0];
 
             // if current node is close enough to the goal stop
-            if (Vector3.Distance(current.Node.Position, end) <= stepDistance) {
+            if(Vector3.Distance(current.Node.Position, endPosition) <= stepDistance) {
                 break;
             }
 
@@ -58,7 +149,7 @@ public class LevelGeneratorTest : MonoBehaviour
                 }
 
                 Node neighbour = GetNeighbour(d, current.Node);
-                if (IsNodeValid(neighbour)) {
+                if(IsNodeValid(neighbour)) {
 
                     NodeRecord isInClosed = QueueContainsNode(closed, neighbour);
                     NodeRecord isInOpen = QueueContainsNode(open, neighbour);
@@ -83,7 +174,7 @@ public class LevelGeneratorTest : MonoBehaviour
                     }
                     else {
                         record = new NodeRecord(neighbour, current, endNodeCost, endNodeHeuristic);
-                        endNodeHeuristic = Vector3.Distance(neighbour.Position, endPosition.transform.position);
+                        endNodeHeuristic = Vector3.Distance(neighbour.Position, endPosition);
                     }
 
                     // update node record
@@ -102,8 +193,8 @@ public class LevelGeneratorTest : MonoBehaviour
         }
 
         // placce platforms on path
-        Vector3 lastPosition = startPosition.transform.position;
-        while(current.Node.Position != startPosition.transform.position) {
+        Vector3 lastPosition = startPosition;
+        while(current.Node.Position != startPosition) {
             Vector3 platformPosition = current.Node.FixedPosition;
 
             // set y position
@@ -129,7 +220,29 @@ public class LevelGeneratorTest : MonoBehaviour
 
     Vector3 FindEndPosition(Vector3 startPosition) {
         Vector3 endPosition = startPosition;
-        // ToDo
+        // Do Flood fill and take last position as end position
+        Queue<FloodFillNode> positions = new Queue<FloodFillNode>();
+        List<Vector3> visited = new List<Vector3>();
+        float maxDistance = 0;
+        positions.Enqueue(new FloodFillNode(startPosition, maxDistance));
+        while(positions.Count != 0) {
+            FloodFillNode current = positions.Dequeue();
+
+            RaycastHit hit;
+            if(Physics.SphereCast(current.Position, 0.1f, Vector3.down, out hit) && !visited.Contains(current.Position)) {
+                if (current.Cost > maxDistance) {
+                    endPosition = current.Position;
+                    maxDistance = current.Cost;
+                }
+
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, stepDistance), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, -stepDistance), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(stepDistance, 0, 0), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(-stepDistance, 0, 0), current.Cost + 1));
+            }
+            visited.Add(current.Position);
+        }
+        Instantiate(goal, endPosition, goal.transform.rotation);
         return endPosition;
     }
 

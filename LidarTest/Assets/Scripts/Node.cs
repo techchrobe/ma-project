@@ -43,3 +43,16 @@ public class NodeRecord : IComparable<NodeRecord> {
         return -1;
     }
 }
+
+public class FloodFillNode {
+    Vector3 position;
+    float cost;
+
+    public FloodFillNode(Vector3 position, float cost) {
+        this.position = position;
+        this.cost = cost;
+    }
+
+    public Vector3 Position { get => position; }
+    public float Cost { get => cost; }
+}
