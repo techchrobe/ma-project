@@ -104,7 +104,7 @@ public class LevelGeneratorTest : MonoBehaviour
         // placce platforms on path
         Vector3 lastPosition = startPosition.transform.position;
         while(current.Node.Position != startPosition.transform.position) {
-            Vector3 platformPosition = current.Node.Position;
+            Vector3 platformPosition = current.Node.FixedPosition;
 
             // set y position
             float yPos = Random.Range(-0.4f, 0.4f);
@@ -142,23 +142,24 @@ public class LevelGeneratorTest : MonoBehaviour
     }
 
     Node GetNeighbour(Direction direction, Node lastPosition) {
+
         switch(direction) {
             case Direction.Top:
                 return new Node(lastPosition.Position + new Vector3(0, 0, stepDistance), lastPosition);
             case Direction.TopRight:
-                return new Node(lastPosition.Position + new Vector3(stepDistance/2, 0, stepDistance / 2), lastPosition);
+                return new Node(lastPosition.Position + new Vector3(stepDistance, 0, stepDistance), lastPosition);
             case Direction.Right:
                 return new Node(lastPosition.Position + new Vector3(stepDistance, 0, 0), lastPosition);
             case Direction.BottomRight:
-                return new Node(lastPosition.Position + new Vector3(stepDistance / 2, 0, -stepDistance / 2), lastPosition);
+                return new Node(lastPosition.Position + new Vector3(stepDistance, 0, -stepDistance), lastPosition);
             case Direction.Bottom:
                 return new Node(lastPosition.Position + new Vector3(0, 0, -stepDistance), lastPosition);
             case Direction.BottomLeft:
-                return new Node(lastPosition.Position + new Vector3(-stepDistance / 2, 0, -stepDistance / 2), lastPosition);
+                return new Node(lastPosition.Position + new Vector3(-stepDistance, 0, -stepDistance), lastPosition);
             case Direction.Left:
                 return new Node(lastPosition.Position + new Vector3(-stepDistance, 0, 0), lastPosition);
             case Direction.TopLeft:
-                return new Node(lastPosition.Position + new Vector3(-stepDistance / 2, 0, stepDistance / 2), lastPosition);
+                return new Node(lastPosition.Position + new Vector3(-stepDistance, 0, stepDistance), lastPosition);
         }
         return lastPosition;
     }
@@ -166,26 +167,26 @@ public class LevelGeneratorTest : MonoBehaviour
 
     bool IsNodeValid(Node n) {
         RaycastHit hit;
-        if(Physics.SphereCast(n.Position, 0.1f, Vector3.down, out hit)) {
+        if(Physics.SphereCast(n.FixedPosition, 0.1f, Vector3.down, out hit)) {
 
             // move platform a bit to the side if it's to close to a wall
-            if(Physics.Raycast(n.Position, Vector3.left, out hit, distanceToWall)) {
-                n.Position += new Vector3(distanceToWall - hit.distance, 0, 0);
+            if(Physics.SphereCast(n.FixedPosition, 0.05f, Vector3.left, out hit, distanceToWall)) {
+                n.FixedPosition += new Vector3(distanceToWall - hit.distance, 0, 0);
             }
 
-            if(Physics.Raycast(n.Position, Vector3.right, out hit, distanceToWall)) {
-                n.Position -= new Vector3(distanceToWall - hit.distance, 0, 0);
+            if(Physics.SphereCast(n.FixedPosition, 0.05f, Vector3.right, out hit, distanceToWall)) {
+                n.FixedPosition -= new Vector3(distanceToWall - hit.distance, 0, 0);
             }
 
-            if(Physics.Raycast(n.Position, Vector3.forward, out hit, distanceToWall)) {
-                n.Position -= new Vector3(0, 0, distanceToWall - hit.distance);
+            if(Physics.SphereCast(n.FixedPosition, 0.05f, Vector3.forward, out hit, distanceToWall)) {
+                n.FixedPosition -= new Vector3(0, 0, distanceToWall - hit.distance);
             }
 
-            if(Physics.Raycast(n.Position, Vector3.back, out hit, distanceToWall)) {
-                n.Position += new Vector3(0, 0, distanceToWall - hit.distance);
+            if(Physics.SphereCast(n.FixedPosition, 0.05f, Vector3.back, out hit, distanceToWall)) {
+                n.FixedPosition += new Vector3(0, 0, distanceToWall - hit.distance);
             }
 
-            if(!Physics.SphereCast(n.Position, 0.1f, Vector3.down, out hit)) {
+            if(!Physics.SphereCast(n.FixedPosition, 0.05f, Vector3.down, out hit)) {
                 return false;
             }
             return true;
