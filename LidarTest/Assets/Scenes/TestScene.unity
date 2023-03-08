@@ -155,9 +155,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3038237058f45c4f915bdd102460bdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xSize: 1
-  ySize: 1
-  newMesh: 1
 --- !u!64 &20553266
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -745,6 +742,7 @@ MonoBehaviour:
   simplePlatform: {fileID: 7066937936447288141, guid: 8ab21c918dbd4499591bf9ea480a6cfa, type: 3}
   debugObj: {fileID: 7003169057441043771, guid: bd4f1b491025b43cbac99d32a5db2172, type: 3}
   goal: {fileID: 0}
+  stepDistance: 0.8
 --- !u!4 &327682025
 Transform:
   m_ObjectHideFlags: 0
@@ -2034,9 +2032,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3038237058f45c4f915bdd102460bdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xSize: 0
-  ySize: 0
-  newMesh: 0
 --- !u!65 &821141617
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3007,12 +3002,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1277991064}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3038237058f45c4f915bdd102460bdb, type: 3}
+  m_Script: {fileID: 11500000, guid: 22cc72e3beb32455a9e654ef2941d86d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xSize: 0
-  ySize: 0
-  newMesh: 0
 --- !u!1 &1405244046
 GameObject:
   m_ObjectHideFlags: 0
@@ -3425,9 +3417,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3038237058f45c4f915bdd102460bdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xSize: 10
-  ySize: 10
-  newMesh: 0
 --- !u!1 &2061476057
 GameObject:
   m_ObjectHideFlags: 0

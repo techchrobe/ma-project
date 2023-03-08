@@ -64,7 +64,7 @@ Shader "Unlit/WireframeShader"
                         return lineColor;
                     }
                     else {
-                        return fixed4(surfaceColor.r, surfaceColor.g, surfaceColor.b, alpha);
+                        return surfaceColor;
                     }
 
                 }
