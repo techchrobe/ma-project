@@ -147,7 +147,7 @@ public class LevelGenerator : MonoBehaviour
             Vector3 platformPosition = current.Node.FixedPosition;
 
             // set y position
-            float yPos = Random.Range(-0.4f, 0.4f);
+            float yPos = Random.Range(-0.3f, 0.3f);
             platformPosition.y = lastPosition.y + yPos;
 
             float groundDistance = DistanceToGround(platformPosition);
@@ -196,6 +196,10 @@ public class LevelGenerator : MonoBehaviour
                 positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, -stepDistance), current.Cost + 1));
                 positions.Enqueue(new FloodFillNode(current.Position + new Vector3(stepDistance, 0, 0), current.Cost + 1));
                 positions.Enqueue(new FloodFillNode(current.Position + new Vector3(-stepDistance, 0, 0), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(stepDistance, 0, stepDistance), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(-stepDistance, 0, -stepDistance), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(stepDistance, 0, -stepDistance), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(-stepDistance, 0, stepDistance), current.Cost + 1));
             }
             visited.Add(current.Position);
         }

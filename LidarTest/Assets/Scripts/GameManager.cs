@@ -17,7 +17,10 @@ public class GameManager : MonoBehaviour
     private static GameManager instance;
     public static GameManager Instance { get { return instance; } }
 
+
     [SerializeField] static bool debug = false;
+    private bool scanning = true;
+    public bool Scanning { get => scanning; }
     public bool GetDebug()
     {
         return debug;
@@ -70,5 +73,6 @@ public class GameManager : MonoBehaviour
         ResetPlayer();
         playUI.SetActive(true);
         scanUI.SetActive(false);
+        scanning = false;
     }
 }

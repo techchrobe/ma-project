@@ -6,6 +6,7 @@ using UnityEngine;
 public class WireframeShader : MonoBehaviour
 {
     private Mesh mesh;
+    private bool scanning = true;
 
     Color[] coords = new[]
     {
@@ -16,12 +17,16 @@ public class WireframeShader : MonoBehaviour
 
     private void Update()
     {
-        mesh = GetComponent<MeshFilter>().mesh;
-        if (mesh != null)
+        if (scanning)
         {
-            SplitMesh(mesh);
-            GenerateExisting(mesh);
+            mesh = GetComponent<MeshFilter>().mesh;
+            if (mesh != null)
+            {
+                SplitMesh(mesh);
+                GenerateExisting(mesh);
+            }
         }
+        scanning = GameManager.Instance.Scanning;
     }
 
     private void GenerateExisting(Mesh mesh)

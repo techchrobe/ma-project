@@ -477,6 +477,8 @@ MonoBehaviour:
   simplePlatform: {fileID: 7066937936447288141, guid: 8ab21c918dbd4499591bf9ea480a6cfa, type: 3}
   debugObj: {fileID: 7003169057441043771, guid: bd4f1b491025b43cbac99d32a5db2172, type: 3}
   goal: {fileID: 1691229009120234105, guid: d9fec72511f5e4fbf8ab885b9de10541, type: 3}
+  stepDistance: 0.4
+  distanceToWall: 0.2
 --- !u!4 &327682025
 Transform:
   m_ObjectHideFlags: 0
@@ -1178,7 +1180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MeshPrefab: {fileID: 3949096903281902671, guid: 949b0adac60d09c4d91b70dc8f456ad9, type: 3}
-  m_Density: 0.55
+  m_Density: 0
   m_Normals: 1
   m_Tangents: 1
   m_TextureCoordinates: 1
@@ -2745,6 +2747,7 @@ GameObject:
   - component: {fileID: 2061476061}
   - component: {fileID: 2061476060}
   - component: {fileID: 2061476059}
+  - component: {fileID: 2061476063}
   m_Layer: 0
   m_Name: AR Camera
   m_TagString: MainCamera
@@ -2853,6 +2856,23 @@ Transform:
   m_Father: {fileID: 210649621}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2061476063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2061476057}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b15f82cc229284894964d2d30806969d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HumanSegmentationStencilMode: 0
+  m_HumanSegmentationDepthMode: 0
+  m_EnvironmentDepthMode: 2
+  m_EnvironmentDepthTemporalSmoothing: 1
+  m_OcclusionPreferenceMode: 0
 --- !u!1001 &2071180639
 PrefabInstance:
   m_ObjectHideFlags: 0
