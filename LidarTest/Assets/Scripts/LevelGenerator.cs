@@ -199,7 +199,7 @@ public class LevelGenerator : MonoBehaviour
                     endPosition = current.Position;
                     maxDistance = current.Cost;
                 }
-                Instantiate(debugObj, current.Position, debugObj.transform.rotation);
+                //Instantiate(debugObj, current.Position, debugObj.transform.rotation);
 
                 positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, 0.2f), current.Cost + 1));
                 positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, -0.2f), current.Cost + 1));

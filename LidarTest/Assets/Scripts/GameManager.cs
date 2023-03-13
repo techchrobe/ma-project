@@ -67,6 +67,8 @@ public class GameManager : MonoBehaviour
 
     public void SaveMesh()
     {
+        AROcclusionManager occlusionManager = arCam.GetComponent<AROcclusionManager>();
+        if (occlusionManager != null) occlusionManager.enabled = true;
         meshManager.enabled = !meshManager.enabled;
         generator.GenerateLevel();
         player.SetActive(true);
