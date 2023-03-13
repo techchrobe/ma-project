@@ -141,20 +141,21 @@ public class LevelGeneratorTest : MonoBehaviour
             FloodFillNode current = positions.Dequeue();
 
             RaycastHit hit2;
-            if(Physics.SphereCast(current.Position, 0.1f, Vector3.down, out hit2) && !visited.Contains(current.Position)) {
-                if (current.Cost >= maxDistance) {
+            if(Physics.SphereCast(current.Position, 0.1f, Vector3.down, out hit2) && !NodePositionIsInList(visited, current.Position)) {
+                if (current.Cost > maxDistance) {
                     endPosition = current.Position;
                     maxDistance = current.Cost;
-                    Instantiate(debugObj, current.Position, debugObj.transform.rotation);
                 }
+                    Instantiate(debugObj, new Vector3(current.Position.x, current.Cost/10, current.Position.z), debugObj.transform.rotation);
 
-                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, stepDistance), current.Cost + 1));
-                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, -stepDistance), current.Cost + 1));
-                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(stepDistance, 0, 0), current.Cost + 1));
-                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(-stepDistance, 0, 0), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, 0.2f), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, -0.2f), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0.2f, 0, 0), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(-0.2f, 0, 0), current.Cost + 1));
+                visited.Add(current.Position);
             }
-            visited.Add(current.Position);
         }
+        Debug.Log(maxDistance);
 
         // Move end position a bit further from the wall
         RaycastHit hit;
@@ -179,6 +180,15 @@ public class LevelGeneratorTest : MonoBehaviour
         }
         Instantiate(goal, endPosition, goal.transform.rotation);
         return endPosition;
+    }
+
+    bool NodePositionIsInList(List<Vector3> nodes, Vector3 item) {
+        foreach (Vector3 n in nodes) {
+            if(n == item) {
+                return true;
+            }
+        }
+        return false;
     }
 
     NodeRecord QueueContainsNode(List<NodeRecord> list, Node n) {

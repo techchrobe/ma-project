@@ -166,6 +166,15 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+    bool NodePositionIsInList(List<Vector3> nodes, Vector3 item) {
+        foreach(Vector3 n in nodes) {
+            if(n == item) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     NodeRecord QueueContainsNode(List<NodeRecord> list, Node n) {
         foreach(NodeRecord nr in list) {
             if(nr.Node.Position == n.Position)
@@ -184,24 +193,43 @@ public class LevelGenerator : MonoBehaviour
         while(positions.Count != 0) {
             FloodFillNode current = positions.Dequeue();
 
-            RaycastHit hit;
-            if(Physics.SphereCast(current.Position, 0.1f, Vector3.down, out hit) && !visited.Contains(current.Position)) {
+            RaycastHit hit2;
+            if(Physics.SphereCast(current.Position, 0.1f, Vector3.down, out hit2) && !NodePositionIsInList(visited, current.Position)) {
                 if(current.Cost > maxDistance) {
                     endPosition = current.Position;
                     maxDistance = current.Cost;
-                    Instantiate(debugObj, current.Position, debugObj.transform.rotation);
                 }
+                Instantiate(debugObj, new Vector3(current.Position.x, current.Cost / 10, current.Position.z), debugObj.transform.rotation);
 
-                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, stepDistance), current.Cost + 1));
-                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, -stepDistance), current.Cost + 1));
-                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(stepDistance, 0, 0), current.Cost + 1));
-                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(-stepDistance, 0, 0), current.Cost + 1));
-                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(stepDistance, 0, stepDistance), current.Cost + 1));
-                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(-stepDistance, 0, -stepDistance), current.Cost + 1));
-                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(stepDistance, 0, -stepDistance), current.Cost + 1));
-                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(-stepDistance, 0, stepDistance), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, 0.2f), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, -0.2f), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0.2f, 0, 0), current.Cost + 1));
+                positions.Enqueue(new FloodFillNode(current.Position + new Vector3(-0.2f, 0, 0), current.Cost + 1));
+                visited.Add(current.Position);
             }
-            visited.Add(current.Position);
+        }
+        Debug.Log(maxDistance);
+
+        // Move end position a bit further from the wall
+        RaycastHit hit;
+        if(Physics.SphereCast(endPosition, 0.1f, Vector3.down, out hit)) {
+
+            // move platform a bit to the side if it's to close to a wall
+            if(Physics.SphereCast(endPosition, 0.05f, Vector3.left, out hit, distanceToWall)) {
+                endPosition += new Vector3(distanceToWall - hit.distance, 0, 0);
+            }
+
+            if(Physics.SphereCast(endPosition, 0.05f, Vector3.right, out hit, distanceToWall)) {
+                endPosition -= new Vector3(distanceToWall - hit.distance, 0, 0);
+            }
+
+            if(Physics.SphereCast(endPosition, 0.05f, Vector3.forward, out hit, distanceToWall)) {
+                endPosition -= new Vector3(0, 0, distanceToWall - hit.distance);
+            }
+
+            if(Physics.SphereCast(endPosition, 0.05f, Vector3.back, out hit, distanceToWall)) {
+                endPosition += new Vector3(0, 0, distanceToWall - hit.distance);
+            }
         }
         //Instantiate(goal, endPosition, goal.transform.rotation);
         return endPosition;
