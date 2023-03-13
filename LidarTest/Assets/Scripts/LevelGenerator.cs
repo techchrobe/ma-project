@@ -65,7 +65,6 @@ public class LevelGenerator : MonoBehaviour
         startPosition = start.transform.position + new Vector3(0, 0.2f, 0);
 
         // Place end postion
-        GameObject farthestMesh = GetFarthest(startPosition, centers);
         endPosition = FindEndPosition(startPosition);
 
         Instantiate(simplePlatform, endPosition, transform.rotation);
@@ -203,7 +202,7 @@ public class LevelGenerator : MonoBehaviour
             }
             visited.Add(current.Position);
         }
-        Instantiate(goal, endPosition, goal.transform.rotation);
+        //Instantiate(goal, endPosition, goal.transform.rotation);
         return endPosition;
     }
 

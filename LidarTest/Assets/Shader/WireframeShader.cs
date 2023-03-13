@@ -22,8 +22,7 @@ public class WireframeShader : MonoBehaviour
     }
 
     private void Update() {
-        mesh = GetComponent<MeshFilter>().mesh;
-        if (mesh != null && prevMesh != mesh) {
+        if (mesh != null && prevMesh.triangles != mesh.triangles) {
             SplitMesh(mesh);
             GenerateExisting(mesh);
             prevMesh = mesh;
