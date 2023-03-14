@@ -86,7 +86,7 @@ public class LevelGenerator : MonoBehaviour
         NodeRecord current = open[0];
         while(open.Count != 0) {
             current = open[0];
-            Instantiate(debugObj, new Vector3(current.Node.Position.x, current.CostSoFar / 10, current.Node.Position.z), debugObj.transform.rotation);
+            //Instantiate(debugObj, new Vector3(current.Node.Position.x, current.CostSoFar / 10, current.Node.Position.z), debugObj.transform.rotation);
 
             // if current node is close enough to the goal stop
             if(Vector3.Distance(current.Node.Position, endPosition) <= stepDistance + distanceToWall) {
@@ -168,7 +168,7 @@ public class LevelGenerator : MonoBehaviour
                 platformPosition.y = platformPosition.y - (groundDistance - 0.1f);
             }
 
-            Instantiate(simplePlatform, platformPosition, transform.rotation);
+            Instantiate(simplePlatform, platformPosition, simplePlatform.transform.rotation);
             lastPosition = platformPosition;
             record = record.Connection;
         }

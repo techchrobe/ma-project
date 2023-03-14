@@ -22,7 +22,7 @@ public class WireframeShader : MonoBehaviour
     }
 
     private void Update() {
-        if (update && mesh != null && Vector3.Distance(transform.position, Camera.main.transform.position) <= 3) {
+        if (update && mesh != null) {
             SplitMesh(mesh);
             GenerateExisting(mesh);
         }
