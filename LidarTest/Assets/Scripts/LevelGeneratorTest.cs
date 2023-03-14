@@ -37,10 +37,11 @@ public class LevelGeneratorTest : MonoBehaviour
         Vector3 end = FindEndPosition(startPosition.transform.position);
         if(end == startPosition.transform.position)
             return;
-        AStar(startPosition.transform.position, end);
+        NodeRecord goal = AStar(startPosition.transform.position, end);
+        BuildPath(goal, startPosition.transform.position);
     }
 
-    private void AStar(Vector3 startPosition, Vector3 endPosition) {
+    NodeRecord AStar(Vector3 startPosition, Vector3 endPosition) {
         List<NodeRecord> open = new List<NodeRecord>();
         List<NodeRecord> closed = new List<NodeRecord>();
 
@@ -106,10 +107,14 @@ public class LevelGeneratorTest : MonoBehaviour
             closed.Add(current);
         }
 
+        return current;
+    }
+
+    void BuildPath(NodeRecord record, Vector3 startPosition) {
         // placce platforms on path
         Vector3 lastPosition = startPosition;
-        while(current.Node.Position != startPosition) {
-            Vector3 platformPosition = current.Node.FixedPosition;
+        while(record.Node.Position != startPosition) {
+            Vector3 platformPosition = record.Node.FixedPosition;
 
             // set y position
             float yPos = Random.Range(-0.4f, 0.4f);
@@ -128,7 +133,7 @@ public class LevelGeneratorTest : MonoBehaviour
 
             Instantiate(simplePlatform, platformPosition, transform.rotation);
             lastPosition = platformPosition;
-            current = current.Connection;
+            record = record.Connection;
         }
     }
 
