@@ -6,8 +6,7 @@ using UnityEngine;
 public class WireframeShader : MonoBehaviour
 {
     private Mesh mesh;
-    private Mesh prevMesh;
-    private bool scanning = true;
+    [SerializeField] bool update;
 
     Color[] coords = new[]
     {
@@ -16,16 +15,16 @@ public class WireframeShader : MonoBehaviour
         new Color(0, 0, 1),
     };
 
-    private void Start() {
+    private void Awake() {
         mesh = GetComponent<MeshFilter>().mesh;
-        prevMesh = mesh;
+        SplitMesh(mesh);
+        GenerateExisting(mesh);
     }
 
     private void Update() {
-        if (mesh != null && prevMesh.triangles != mesh.triangles) {
+        if (update && mesh != null && Vector3.Distance(transform.position, Camera.main.transform.position) <= 3) {
             SplitMesh(mesh);
             GenerateExisting(mesh);
-            prevMesh = mesh;
         }
     }
 

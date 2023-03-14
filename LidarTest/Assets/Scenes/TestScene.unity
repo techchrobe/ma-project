@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44402242, g: 0.49316543, b: 0.5722324, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.57481617, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -743,6 +743,7 @@ MonoBehaviour:
   debugObj: {fileID: 7003169057441043771, guid: bd4f1b491025b43cbac99d32a5db2172, type: 3}
   goal: {fileID: 0}
   stepDistance: 0.8
+  distanceToWall: 0.2
 --- !u!4 &327682025
 Transform:
   m_ObjectHideFlags: 0
@@ -3005,6 +3006,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22cc72e3beb32455a9e654ef2941d86d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  update: 0
 --- !u!1 &1405244046
 GameObject:
   m_ObjectHideFlags: 0
@@ -3743,38 +3745,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 8964428446792330912, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
-      propertyPath: cam
-      value: 
-      objectReference: {fileID: 2061476057}
-    - target: {fileID: 8964428446792330912, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
-      propertyPath: speed
-      value: 0.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 8964428446792330912, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
-      propertyPath: endscreen
-      value: 
-      objectReference: {fileID: 1405244046}
-    - target: {fileID: 8964428446792330912, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
-      propertyPath: jumpHeight
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 8964428446792330912, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
-      propertyPath: deathDistance
-      value: 70
-      objectReference: {fileID: 0}
-    - target: {fileID: 8964428446792330912, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
-      propertyPath: variableJoystick
-      value: 
-      objectReference: {fileID: 183076544}
-    - target: {fileID: 8964428446792330912, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
-      propertyPath: gravityMultiplier
-      value: 1.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 8964428446792330915, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: e3745b4ef0d2c8d4f9bc3206ebd95838, type: 2}
     - target: {fileID: 8964428446792330917, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
       propertyPath: m_RootOrder
       value: 9
