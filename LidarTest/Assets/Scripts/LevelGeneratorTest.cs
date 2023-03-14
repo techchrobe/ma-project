@@ -36,7 +36,7 @@ public class LevelGeneratorTest : MonoBehaviour
         Vector3 end = FindEndPosition(startPosition.transform.position);
         if(end == startPosition.transform.position)
             return;
-        //AStar(startPosition.transform.position, end);
+        AStar(startPosition.transform.position, end);
     }
 
     private void AStar(Vector3 startPosition, Vector3 endPosition) {
@@ -47,6 +47,7 @@ public class LevelGeneratorTest : MonoBehaviour
         NodeRecord current = open[0];
         while(open.Count != 0) {
             current = open[0];
+            Instantiate(debugObj, new Vector3(current.Node.Position.x, current.CostSoFar / 10, current.Node.Position.z), debugObj.transform.rotation);
 
             // if current node is close enough to the goal stop
             if(Vector3.Distance(current.Node.Position, endPosition) <= stepDistance + distanceToWall) {
@@ -55,9 +56,9 @@ public class LevelGeneratorTest : MonoBehaviour
 
             // add neighbours
             foreach(Direction d in All) {
-                int cost = 1;
+                float cost = 0.1f;
                 if((int)d >= 4) {
-                    cost = 2;
+                    cost = 0.1f;
                 }
 
                 Node neighbour = GetNeighbour(d, current.Node);
@@ -146,7 +147,7 @@ public class LevelGeneratorTest : MonoBehaviour
                     endPosition = current.Position;
                     maxDistance = current.Cost;
                 }
-                    Instantiate(debugObj, new Vector3(current.Position.x, current.Cost/10, current.Position.z), debugObj.transform.rotation);
+                //    Instantiate(debugObj, new Vector3(current.Position.x, current.Cost/10, current.Position.z), debugObj.transform.rotation);
 
                 positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, 0.2f), current.Cost + 1));
                 positions.Enqueue(new FloodFillNode(current.Position + new Vector3(0, 0, -0.2f), current.Cost + 1));
