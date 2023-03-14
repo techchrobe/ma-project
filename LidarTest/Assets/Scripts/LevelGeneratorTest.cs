@@ -9,6 +9,7 @@ public class LevelGeneratorTest : MonoBehaviour
     [SerializeField] GameObject goal;
     [SerializeField] float stepDistance = 0.8f;
     [SerializeField] float distanceToWall = 0.2f;
+    [SerializeField] LayerMask mask;
 
 
     private List<GameObject> centers = new List<GameObject>();
@@ -141,8 +142,12 @@ public class LevelGeneratorTest : MonoBehaviour
         while(positions.Count != 0) {
             FloodFillNode current = positions.Dequeue();
 
-            RaycastHit hit2;
-            if(Physics.SphereCast(current.Position, 0.1f, Vector3.down, out hit2) && !NodePositionIsInList(visited, current.Position)) {
+            RaycastHit hit;
+            if(Physics.SphereCast(current.Position, 0.1f, Vector3.down, out hit) && !NodePositionIsInList(visited, current.Position)
+                && !(Physics.SphereCast(current.Position, 0.05f, Vector3.left, out hit, distanceToWall, mask)
+                    || Physics.SphereCast(current.Position, 0.05f, Vector3.right, out hit, distanceToWall, mask)
+                    || Physics.SphereCast(current.Position, 0.05f, Vector3.forward, out hit, distanceToWall, mask)
+                    || Physics.SphereCast(current.Position, 0.05f, Vector3.back, out hit, distanceToWall, mask))) {
                 if (current.Cost > maxDistance) {
                     endPosition = current.Position;
                     maxDistance = current.Cost;
@@ -158,27 +163,6 @@ public class LevelGeneratorTest : MonoBehaviour
         }
         Debug.Log(maxDistance);
 
-        // Move end position a bit further from the wall
-        RaycastHit hit;
-        if(Physics.SphereCast(endPosition, 0.1f, Vector3.down, out hit)) {
-
-            // move platform a bit to the side if it's to close to a wall
-            if(Physics.SphereCast(endPosition, 0.05f, Vector3.left, out hit, distanceToWall)) {
-                endPosition += new Vector3(distanceToWall - hit.distance, 0, 0);
-            }
-
-            if(Physics.SphereCast(endPosition, 0.05f, Vector3.right, out hit, distanceToWall)) {
-                endPosition -= new Vector3(distanceToWall - hit.distance, 0, 0);
-            }
-
-            if(Physics.SphereCast(endPosition, 0.05f, Vector3.forward, out hit, distanceToWall)) {
-                endPosition -= new Vector3(0, 0, distanceToWall - hit.distance);
-            }
-
-            if(Physics.SphereCast(endPosition, 0.05f, Vector3.back, out hit, distanceToWall)) {
-                endPosition += new Vector3(0, 0, distanceToWall - hit.distance);
-            }
-        }
         Instantiate(goal, endPosition, goal.transform.rotation);
         return endPosition;
     }
@@ -226,26 +210,13 @@ public class LevelGeneratorTest : MonoBehaviour
 
     bool IsNodeValid(Node n) {
         RaycastHit hit;
-        if(Physics.SphereCast(n.FixedPosition, 0.1f, Vector3.down, out hit)) {
+        if(Physics.SphereCast(n.Position, 0.1f, Vector3.down, out hit)) {
 
             // move platform a bit to the side if it's to close to a wall
-            if(Physics.SphereCast(n.FixedPosition, 0.05f, Vector3.left, out hit, distanceToWall)) {
-                n.FixedPosition += new Vector3(distanceToWall - hit.distance, 0, 0);
-            }
-
-            if(Physics.SphereCast(n.FixedPosition, 0.05f, Vector3.right, out hit, distanceToWall)) {
-                n.FixedPosition -= new Vector3(distanceToWall - hit.distance, 0, 0);
-            }
-
-            if(Physics.SphereCast(n.FixedPosition, 0.05f, Vector3.forward, out hit, distanceToWall)) {
-                n.FixedPosition -= new Vector3(0, 0, distanceToWall - hit.distance);
-            }
-
-            if(Physics.SphereCast(n.FixedPosition, 0.05f, Vector3.back, out hit, distanceToWall)) {
-                n.FixedPosition += new Vector3(0, 0, distanceToWall - hit.distance);
-            }
-
-            if(!Physics.SphereCast(n.FixedPosition, 0.05f, Vector3.down, out hit)) {
+            if(Physics.SphereCast(n.Position, 0.05f, Vector3.left, out hit, distanceToWall, mask)
+                || Physics.SphereCast(n.Position, 0.05f, Vector3.right, out hit, distanceToWall, mask)
+                || Physics.SphereCast(n.Position, 0.05f, Vector3.forward, out hit, distanceToWall, mask)
+                || Physics.SphereCast(n.Position, 0.05f, Vector3.back, out hit, distanceToWall, mask)) {
                 return false;
             }
             return true;
@@ -271,6 +242,28 @@ public class LevelGeneratorTest : MonoBehaviour
             return hit.distance;
         }
         return float.MaxValue;
+    }
+
+    private float DistanceToWall(Vector3 position) {
+        float distance = 0;
+        float punishment = 2;
+        RaycastHit hit;
+        if(Physics.SphereCast(position, 0.05f, Vector3.left, out hit, distanceToWall, mask)) {
+            distance += distanceToWall - hit.distance + punishment;
+        }
+
+        if(Physics.SphereCast(position, 0.05f, Vector3.right, out hit, distanceToWall, mask)) {
+            distance += distanceToWall - hit.distance + punishment;
+        }
+
+        if(Physics.SphereCast(position, 0.05f, Vector3.forward, out hit, distanceToWall, mask)) {
+            distance += distanceToWall - hit.distance + punishment;
+        }
+
+        if(Physics.SphereCast(position, 0.05f, Vector3.back, out hit, distanceToWall, mask)) {
+            distance += distanceToWall - hit.distance + punishment;
+        }
+        return distance;
     }
 
     private GameObject GetFarthest(Vector3 startPoint, List<GameObject> gos)

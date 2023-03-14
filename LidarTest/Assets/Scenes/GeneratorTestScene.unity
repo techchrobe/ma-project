@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 61313625}
   - component: {fileID: 61313624}
   - component: {fileID: 61313628}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane (3)
   m_TagString: Mesh
   m_Icon: {fileID: 0}
@@ -248,7 +248,7 @@ GameObject:
   - component: {fileID: 133878646}
   - component: {fileID: 133878645}
   - component: {fileID: 133878644}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane (10)
   m_TagString: Mesh
   m_Icon: {fileID: 0}
@@ -671,7 +671,10 @@ MonoBehaviour:
   debugObj2: {fileID: 7003169057441043771, guid: 2948442f8b074364080d966a599a9a15, type: 3}
   goal: {fileID: 1691229009120234105, guid: d9fec72511f5e4fbf8ab885b9de10541, type: 3}
   stepDistance: 0.2
-  distanceToWall: 0.1
+  distanceToWall: 0.3
+  mask:
+    serializedVersion: 2
+    m_Bits: 128
   startPosition: {fileID: 711540453}
   endPosition: {fileID: 0}
   All: 0000000001000000020000000300000004000000050000000600000007000000
@@ -1059,7 +1062,7 @@ GameObject:
   - component: {fileID: 481383914}
   - component: {fileID: 481383913}
   - component: {fileID: 481383917}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane (5)
   m_TagString: Mesh
   m_Icon: {fileID: 0}
@@ -1747,7 +1750,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 711540453}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.16, y: 0.371, z: -3.06}
+  m_LocalPosition: {x: -0.17, y: 0.371, z: -3.06}
   m_LocalScale: {x: 0.25263566, y: 0.13379, z: 0.35259017}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2035,7 +2038,7 @@ GameObject:
   - component: {fileID: 952347903}
   - component: {fileID: 952347902}
   - component: {fileID: 952347901}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane (2)
   m_TagString: Mesh
   m_Icon: {fileID: 0}
@@ -2815,7 +2818,7 @@ GameObject:
   - component: {fileID: 1204213031}
   - component: {fileID: 1204213030}
   - component: {fileID: 1204213029}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane (8)
   m_TagString: Mesh
   m_Icon: {fileID: 0}
@@ -2927,7 +2930,7 @@ GameObject:
   - component: {fileID: 1264418592}
   - component: {fileID: 1264418591}
   - component: {fileID: 1264418590}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane (7)
   m_TagString: Mesh
   m_Icon: {fileID: 0}
@@ -3039,7 +3042,7 @@ GameObject:
   - component: {fileID: 1272374736}
   - component: {fileID: 1272374735}
   - component: {fileID: 1272374734}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane (9)
   m_TagString: Mesh
   m_Icon: {fileID: 0}
@@ -3150,7 +3153,7 @@ GameObject:
   - component: {fileID: 1288469612}
   - component: {fileID: 1288469611}
   - component: {fileID: 1288469610}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane (4)
   m_TagString: Mesh
   m_Icon: {fileID: 0}
@@ -3248,7 +3251,7 @@ GameObject:
   - component: {fileID: 1349943963}
   - component: {fileID: 1349943962}
   - component: {fileID: 1349943961}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane
   m_TagString: Mesh
   m_Icon: {fileID: 0}
@@ -3346,7 +3349,7 @@ GameObject:
   - component: {fileID: 1379645061}
   - component: {fileID: 1379645060}
   - component: {fileID: 1379645059}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane (1)
   m_TagString: Mesh
   m_Icon: {fileID: 0}
@@ -3681,7 +3684,7 @@ GameObject:
   - component: {fileID: 1641945625}
   - component: {fileID: 1641945624}
   - component: {fileID: 1641945623}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane (11)
   m_TagString: Mesh
   m_Icon: {fileID: 0}
@@ -3793,7 +3796,7 @@ GameObject:
   - component: {fileID: 1669128867}
   - component: {fileID: 1669128866}
   - component: {fileID: 1669128870}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane (6)
   m_TagString: Mesh
   m_Icon: {fileID: 0}
@@ -3962,7 +3965,7 @@ GameObject:
   - component: {fileID: 2011514388}
   - component: {fileID: 2011514387}
   - component: {fileID: 2011514386}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane (12)
   m_TagString: Mesh
   m_Icon: {fileID: 0}
