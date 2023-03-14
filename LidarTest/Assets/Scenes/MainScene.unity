@@ -477,8 +477,11 @@ MonoBehaviour:
   simplePlatform: {fileID: 7066937936447288141, guid: 8ab21c918dbd4499591bf9ea480a6cfa, type: 3}
   debugObj: {fileID: 7003169057441043771, guid: bd4f1b491025b43cbac99d32a5db2172, type: 3}
   goal: {fileID: 1691229009120234105, guid: d9fec72511f5e4fbf8ab885b9de10541, type: 3}
-  stepDistance: 0.4
-  distanceToWall: 0.2
+  stepDistance: 0.2
+  distanceToWall: 0.4
+  mask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!4 &327682025
 Transform:
   m_ObjectHideFlags: 0
@@ -3187,5 +3190,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1675393944685768044, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
