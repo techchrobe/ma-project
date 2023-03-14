@@ -1,8 +1,11 @@
 fileFormatVersion: 2
-guid: 8ccb7d154d011604499732cbb7356849
+guid: 7fd352d10ae87ee4e8c2b6caefe6fc49
 ModelImporter:
   serializedVersion: 21300
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      74: -8515560403302317629
+    second: Cube.001|Cube.001Action
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -66,7 +69,7 @@ ModelImporter:
     secondaryUVMinLightmapResolution: 40
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
-    useFileScale: 0
+    useFileScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -88,7 +91,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.3
+    globalScale: 0.003
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
