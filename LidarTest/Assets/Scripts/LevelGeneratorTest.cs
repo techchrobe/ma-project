@@ -114,7 +114,7 @@ public class LevelGeneratorTest : MonoBehaviour
         // placce platforms on path
         Vector3 lastPosition = startPosition;
         while(record.Node.Position != startPosition) {
-            Vector3 platformPosition = record.Node.FixedPosition;
+            Vector3 platformPosition = record.Node.Position;
 
             // set y position
             float yPos = Random.Range(-0.3f, 0.3f);
@@ -131,7 +131,7 @@ public class LevelGeneratorTest : MonoBehaviour
                 platformPosition.y = platformPosition.y - (groundDistance - 0.1f);
             }
 
-            Instantiate(simplePlatform, platformPosition, transform.rotation);
+            Instantiate(simplePlatform, platformPosition, simplePlatform.transform.rotation);
             lastPosition = platformPosition;
             record = record.Connection;
         }

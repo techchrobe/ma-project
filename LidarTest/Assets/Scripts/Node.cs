@@ -3,17 +3,14 @@ using UnityEngine;
 
 public class Node {
     Vector3 position;
-    Vector3 fixedPosition;
     Node previousNode;
 
     public Node(Vector3 position, Node previousNode) {
         this.position = position;
         this.previousNode = previousNode;
-        this.fixedPosition = position;
     }
 
     public Vector3 Position { get => position; set => position = value; }
-    public Vector3 FixedPosition { get => fixedPosition; set => fixedPosition = value; }
     public Node getPreviousNode() { return previousNode; }
 }
 

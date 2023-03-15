@@ -54,7 +54,7 @@ Shader "Unlit/WireframeShader"
                 fixed4 frag(v2f i) : Color
                 {
                     // Find the barycentric coordinate closest to the edge.
-                    float closest = min(i.color.x, i.color.y);
+                    float closest = min(i.color.x, min(i.color.y, i.color.z));
                     // Set alpha to 1 if within the threshold, else 0.
                     float alpha = step(closest, lineWidth);
 

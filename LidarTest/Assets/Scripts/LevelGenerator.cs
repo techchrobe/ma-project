@@ -65,17 +65,14 @@ public class LevelGenerator : MonoBehaviour
         GameObject start = Instantiate(simplePlatform, position, transform.rotation);
         startPosition = start.transform.position + new Vector3(0, 0.2f, 0);
 
-        // Place end postion
+        // Find end postion
         endPosition = FindEndPosition(startPosition);
-
-        Instantiate(simplePlatform, endPosition, transform.rotation);
-        Instantiate(goal, endPosition + new Vector3(0, 0.1f, 0), transform.rotation);
 
         // Place platforms between start and end position
         // Find path between Start and End position
 
         NodeRecord goalNode = AStar(startPosition, endPosition);
-        BuildPath(goalNode, startPosition);
+        BuildPath(goalNode, startPosition, endPosition);
     }
 
     NodeRecord AStar(Vector3 startPosition, Vector3 endPosition) {
@@ -147,31 +144,68 @@ public class LevelGenerator : MonoBehaviour
         return current;
     }
 
-    void BuildPath(NodeRecord record, Vector3 startPosition) {
+    void BuildPath(NodeRecord record, Vector3 startPosition, Vector3 endPosition) {
         // placce platforms on path
-        Vector3 lastPosition = startPosition;
+        Stack<Vector3> positions = new Stack<Vector3>();
+        bool odd = true;
         while(record.Node.Position != startPosition) {
-            Vector3 platformPosition = record.Node.FixedPosition;
+            if (odd)
+            {
+                positions.Push(record.Node.Position);
+                record = record.Connection;
+            }
+            odd = !odd;
+        }
+        float yPos;
+        float groundDistance;
 
+        Vector3 lastPosition = positions.Peek();
+        while(positions.Count > 0)
+        {
+            Vector3 platformPosition = positions.Pop();
             // set y position
-            float yPos = Random.Range(-0.3f, 0.3f);
+            yPos = Random.Range(-0.3f, 0.3f);
             platformPosition.y = lastPosition.y + yPos;
 
-            float groundDistance = DistanceToGround(platformPosition);
+            groundDistance = DistanceToGround(platformPosition);
 
-            if(groundDistance == float.MaxValue) {
+            // Below Ground
+            if (groundDistance == float.MaxValue)
+            {
                 platformPosition.y = lastPosition.y + (yPos * -1);
                 groundDistance = DistanceToGround(platformPosition);
             }
+
             // Don't place to close to ground
-            if(groundDistance < 0.1f) {
+            if (groundDistance < 0.1f)
+            {
                 platformPosition.y = platformPosition.y - (groundDistance - 0.1f);
             }
 
-            Instantiate(simplePlatform, platformPosition, simplePlatform.transform.rotation);
+            Instantiate(simplePlatform, platformPosition, simplePlatform.transform.rotation)/*transform.LookAt(lastPosition)*/;
             lastPosition = platformPosition;
-            record = record.Connection;
         }
+        // set y position
+        yPos = Random.Range(-0.3f, 0.3f);
+        endPosition.y = lastPosition.y + yPos;
+
+        groundDistance = DistanceToGround(endPosition);
+
+        // Below Ground
+        if (groundDistance == float.MaxValue)
+        {
+            endPosition.y = lastPosition.y + (yPos * -1);
+            groundDistance = DistanceToGround(endPosition);
+        }
+
+        // Don't place to close to ground
+        if (groundDistance < 0.1f)
+        {
+            endPosition.y = endPosition.y - (groundDistance - 0.1f);
+        }
+
+        Instantiate(simplePlatform, endPosition, transform.rotation);
+        Instantiate(goal, endPosition + new Vector3(0, 0.1f, 0), transform.rotation);
     }
 
     bool NodePositionIsInList(List<Vector3> nodes, Vector3 item) {

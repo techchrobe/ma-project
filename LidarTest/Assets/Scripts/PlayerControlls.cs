@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerControlls : MonoBehaviour
 {
     CharacterController controller;
+    [SerializeField] GameObject groundCheckGo;
     [SerializeField] GameObject cam;
     [SerializeField] float speed = 1;
     [SerializeField] FixedJoystick variableJoystick;
@@ -61,9 +62,9 @@ public class PlayerControlls : MonoBehaviour
 
     private void HandleGravityAndJump()
     {
-        if (controller.isGrounded && velocityY < 0f)
+        if (IsGrounded() && velocityY < 0f)
             velocityY = groundedGravity;
-        if (controller.isGrounded && (Input.GetKeyDown(KeyCode.Space) || jumped))
+        if (IsGrounded() && (Input.GetKeyDown(KeyCode.Space) || jumped))
         {
             velocityY = Mathf.Sqrt(jumpHeight * 2f * gravity);
             jumped = false;
@@ -78,6 +79,18 @@ public class PlayerControlls : MonoBehaviour
         {
             GameManager.Instance.ResetPlayer();
         }
+    }
+
+    bool IsGrounded()
+    {
+        if (Physics.SphereCast(groundCheckGo.transform.position, 0.03f, Vector3.down, out RaycastHit hit))
+        {
+            if (hit.distance <= 0.06f)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void Reset()
