@@ -117,7 +117,7 @@ public class LevelGeneratorTest : MonoBehaviour
             Vector3 platformPosition = record.Node.FixedPosition;
 
             // set y position
-            float yPos = Random.Range(-0.4f, 0.4f);
+            float yPos = Random.Range(-0.3f, 0.3f);
             platformPosition.y = lastPosition.y + yPos;
 
             float groundDistance = DistanceToGround(platformPosition);
