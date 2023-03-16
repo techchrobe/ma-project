@@ -6,11 +6,13 @@ public class PlayerControlls : MonoBehaviour
     [SerializeField] GameObject groundCheckGo;
     [SerializeField] GameObject cam;
     [SerializeField] float speed = 1;
+    [SerializeField] float jumpSpeed = 1;
     [SerializeField] FixedJoystick variableJoystick;
 
     [SerializeField] float rotationSmoothTime;
     float currentAngle;
     float currentAngleVelocity;
+    float actualSpeed;
 
     [SerializeField] float deathDistance = 100;
 
@@ -51,13 +53,19 @@ public class PlayerControlls : MonoBehaviour
         //capturing Input from Player
         Vector3 movement = new Vector3(variableJoystick.Horizontal, 0, variableJoystick.Vertical).normalized;
         Vector3 speedVector = new Vector3(variableJoystick.Horizontal, 0, variableJoystick.Vertical);
+        if(IsGrounded()) {
+            actualSpeed = speed;
+        }
+        else {
+            actualSpeed = jumpSpeed;
+        }
         if (movement.magnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
             currentAngle = Mathf.SmoothDampAngle(currentAngle, targetAngle, ref currentAngleVelocity, rotationSmoothTime);
             transform.rotation = Quaternion.Euler(0, currentAngle, 0);
             Vector3 rotatedMovement = Quaternion.Euler(0, targetAngle, 0) * Vector3.forward;
-            controller.Move(rotatedMovement * (speed * speedVector.magnitude) * Time.deltaTime);
+            controller.Move(rotatedMovement * (actualSpeed * speedVector.magnitude) * Time.deltaTime);
         }
     }
 
@@ -84,10 +92,8 @@ public class PlayerControlls : MonoBehaviour
 
     bool IsGrounded()
     {
-        if (Physics.SphereCast(groundCheckGo.transform.position, 0.03f, Vector3.down, out RaycastHit hit))
-        {
-            if (hit.distance <= 0.06f)
-            {
+        if (Physics.SphereCast(groundCheckGo.transform.position, 0.01f, Vector3.down, out RaycastHit hit)) {
+            if (hit.distance <= 0.02f) {
                 return true;
             }
         }

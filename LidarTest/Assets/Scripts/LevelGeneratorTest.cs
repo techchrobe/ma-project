@@ -7,7 +7,7 @@ public class LevelGeneratorTest : MonoBehaviour
     [SerializeField] GameObject debugObj;
     [SerializeField] GameObject debugObj2;
     [SerializeField] GameObject goal;
-    [SerializeField] float stepDistance = 0.8f;
+    [SerializeField] float stepDistance = 0.2f;
     [SerializeField] float distanceToWall = 0.2f;
     [SerializeField] LayerMask mask;
 
@@ -59,9 +59,6 @@ public class LevelGeneratorTest : MonoBehaviour
             // add neighbours
             foreach(Direction d in All) {
                 float cost = 0.1f;
-                if((int)d >= 4) {
-                    cost = 0.1f;
-                }
 
                 Node neighbour = GetNeighbour(d, current.Node);
                 if(IsNodeValid(neighbour)) {
@@ -113,12 +110,18 @@ public class LevelGeneratorTest : MonoBehaviour
     void BuildPath(NodeRecord record, Vector3 startPosition, Vector3 endPosition) {
         // placce platforms on path
         Stack<Vector3> positions = new Stack<Vector3>();
-        (bool[] walk, bool[] jump) = GenerateRhythm(record.EstimatedTotalCost);
+        (bool[] walk, bool[] jump) = GenerateRhythm(record.EstimatedTotalCost/2);
+
+        bool odd = true;
 
         while(record.Node.Position != startPosition) {
-            positions.Push(record.Node.Position);
+            if(odd) {
+                positions.Push(record.Node.Position);
+            }
+            odd = !odd;
             record = record.Connection;
         }
+
         float yPos;
         float groundDistance;
         float ceilingDistance;
@@ -126,21 +129,21 @@ public class LevelGeneratorTest : MonoBehaviour
         int missedPlatforms = 0;
 
         // ignore first platform
-        Vector3 lastPosition = positions.Pop();
+        Vector3 lastPosition = positions.Peek();
         while(positions.Count > 0) {
             Vector3 platformPosition = positions.Pop();
             // when rhythm walk and jump don't place a platform
-            if(count != 0 && missedPlatforms < 2 && !walk[count] && jump[count]) {
+            if(count != 0 && missedPlatforms < 1 && !walk[count] && jump[count]) {
                 missedPlatforms++;
                 count++;
                 continue;
             }
 
             // set y position
-            yPos = Random.Range(0.1f, 0.3f) * (Random.Range(0, 2) == 0 ? 1 : -1);
+            yPos = Random.Range(0.05f, 0.2f) * (Random.Range(0, 2) == 0 ? 1 : -1);
 
             // when only walking and not jumping don't change y
-            if(walk[count] && !jump[count]) {
+            if((walk[count] && !jump[count])) {
                 yPos = 0;
             }
             platformPosition.y = lastPosition.y + yPos;
@@ -297,20 +300,12 @@ public class LevelGeneratorTest : MonoBehaviour
         switch(direction) {
             case Direction.Top:
                 return new Node(lastPosition.Position + new Vector3(0, 0, stepDistance), lastPosition);
-            case Direction.TopRight:
-                return new Node(lastPosition.Position + new Vector3(stepDistance, 0, stepDistance), lastPosition);
             case Direction.Right:
                 return new Node(lastPosition.Position + new Vector3(stepDistance, 0, 0), lastPosition);
-            case Direction.BottomRight:
-                return new Node(lastPosition.Position + new Vector3(stepDistance, 0, -stepDistance), lastPosition);
             case Direction.Bottom:
                 return new Node(lastPosition.Position + new Vector3(0, 0, -stepDistance), lastPosition);
-            case Direction.BottomLeft:
-                return new Node(lastPosition.Position + new Vector3(-stepDistance, 0, -stepDistance), lastPosition);
             case Direction.Left:
                 return new Node(lastPosition.Position + new Vector3(-stepDistance, 0, 0), lastPosition);
-            case Direction.TopLeft:
-                return new Node(lastPosition.Position + new Vector3(-stepDistance, 0, stepDistance), lastPosition);
         }
         return lastPosition;
     }

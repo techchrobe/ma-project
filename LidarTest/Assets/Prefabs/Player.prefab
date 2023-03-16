@@ -24,8 +24,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7552381848249051503}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.00000022351742, y: -0.686, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalPosition: {x: 0, y: -0.58, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8964428446792330917}
@@ -134,13 +134,14 @@ MonoBehaviour:
   groundCheckGo: {fileID: 7552381848249051503}
   cam: {fileID: 0}
   speed: 0.5
+  jumpSpeed: 0.8
   variableJoystick: {fileID: 0}
   rotationSmoothTime: 0.1
   deathDistance: 50
   gravity: 9.8
-  gravityMultiplier: 1.7
+  gravityMultiplier: 1
   groundedGravity: -0.5
-  jumpHeight: 0.8
+  jumpHeight: 0.4
   endscreen: {fileID: 0}
 --- !u!136 &8964428446792330913
 CapsuleCollider:
@@ -170,8 +171,8 @@ CharacterController:
   m_Height: 1.39
   m_Radius: 0.5
   m_SlopeLimit: 30
-  m_StepOffset: 0.1
-  m_SkinWidth: 0.08
+  m_StepOffset: 0
+  m_SkinWidth: 0.001
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &8964428446650737153
