@@ -21,6 +21,8 @@ public class LevelGenerator : MonoBehaviour
     private Vector3 endPosition;
 
     public Vector3 StartPosition { get => startPosition; }
+    private float maxHeight;
+    public float MaxHeight { get => maxHeight; set => maxHeight = value; }
 
     enum Direction {
         Top = 0,
@@ -50,6 +52,8 @@ public class LevelGenerator : MonoBehaviour
             centers.Add(instObj);
             if (!GameManager.Instance.GetDebug()) instObj.GetComponent<MeshRenderer>().enabled = false;
         }
+
+        maxHeight += 0.5f;
 
         Bounds bounds = new Bounds(centers[0].transform.position, Vector3.zero);
         for (int i = 1; i < centers.Count; i++)

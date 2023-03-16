@@ -10,9 +10,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject arCam;
     [SerializeField] ARMeshManager meshManager;
     [SerializeField] LevelGenerator generator;
+    [SerializeField] LevelGeneratorTest generatorTest;
 
     private static GameManager instance;
     public static GameManager Instance { get { return instance; } }
+
+    private List<float> cameraYPositions = new List<float>();
+    private float timer = 0;
 
 
     [SerializeField] static bool debug = false;
@@ -41,11 +45,22 @@ public class GameManager : MonoBehaviour
         player.SetActive(false);
     }
 
+    private void Update() {
+        timer += Time.deltaTime;
+        if(timer > 2) {
+            cameraYPositions.Add(arCam.transform.position.y);
+            timer = 0;
+        }
+    }
+
     public void ResetPlayer()
     {
         player.GetComponent<PlayerControlls>().Reset();
         player.GetComponent<CharacterController>().enabled = false;
-        player.transform.position = generator.StartPosition;
+        if(generator != null)
+            player.transform.position = generator.StartPosition;
+        if(generatorTest != null)
+            player.transform.position = generatorTest.startPosition.transform.position;
         Debug.Log("Player reset");
         player.GetComponent<CharacterController>().enabled = true;
     }
@@ -66,6 +81,8 @@ public class GameManager : MonoBehaviour
         //AROcclusionManager occlusionManager = arCam.GetComponent<AROcclusionManager>();
         //if (occlusionManager != null) occlusionManager.enabled = true;
         meshManager.enabled = !meshManager.enabled;
+        cameraYPositions.Sort();
+        generator.MaxHeight = cameraYPositions[cameraYPositions.Count - 1];
         generator.GenerateLevel();
         player.SetActive(true);
         ResetPlayer();

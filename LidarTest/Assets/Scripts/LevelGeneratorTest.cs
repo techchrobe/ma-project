@@ -11,8 +11,8 @@ public class LevelGeneratorTest : MonoBehaviour
     [SerializeField] float distanceToWall = 0.2f;
     [SerializeField] LayerMask mask;
 
-
-    private List<GameObject> centers = new List<GameObject>();
+    private float maxHeight = 1.2f;
+    private List<Vector3> randomCheckpoints = new List<Vector3>();
 
     public GameObject startPosition;
     public GameObject endPosition;
@@ -30,6 +30,7 @@ public class LevelGeneratorTest : MonoBehaviour
     };
 
     public Direction[] All = { Direction.Top, Direction.Right, Direction.Bottom, Direction.Left, Direction.TopLeft, Direction.TopRight, Direction.BottomLeft, Direction.BottomRight };
+
 
     public void Start()
     {
@@ -143,6 +144,10 @@ public class LevelGeneratorTest : MonoBehaviour
                 yPos = 0;
             }
             platformPosition.y = lastPosition.y + yPos;
+
+            if(platformPosition.y > maxHeight) {
+                platformPosition.y -= yPos;
+            }
 
             // Don't place to close to ground
             groundDistance = DistanceToGround(platformPosition);
