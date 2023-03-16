@@ -1,8 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,12 +12,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] ARMeshManager meshManager;
     [SerializeField] LevelGenerator generator;
     [SerializeField] LevelGeneratorTest generatorTest;
+    [SerializeField] GameObject tutorialScreen;
+    [SerializeField] GameObject continueButton;
+    [SerializeField] TextMeshProUGUI tutorialText;
 
     private static GameManager instance;
     public static GameManager Instance { get { return instance; } }
 
     private List<float> cameraYPositions = new List<float>();
     private float timer = 0;
+    private bool showTutorial = false;
+    private bool readTutorial = false;
 
 
     [SerializeField] static bool debug = false;
@@ -47,6 +52,12 @@ public class GameManager : MonoBehaviour
     }
 
     private void Update() {
+        if(!showTutorial && meshManager.meshes.Count > 0)
+        {
+            tutorialText.text = "Move and rotate the device around to scan.";
+            continueButton.SetActive(true);
+            showTutorial = true;
+        }
         timer += Time.deltaTime;
         if(timer > 2) {
             cameraYPositions.Add(arCam.transform.position.y);
@@ -92,5 +103,18 @@ public class GameManager : MonoBehaviour
         player.SetActive(true);
         ResetPlayer();
         scanning = false;
+    }
+
+    public void TutorialNext()
+    {
+        if (readTutorial)
+        {
+            tutorialScreen.SetActive(false);
+        }
+        else
+        {
+            tutorialText.text = "Press the 'Start' button when you're done scanning.";
+            readTutorial = true;
+        }
     }
 }

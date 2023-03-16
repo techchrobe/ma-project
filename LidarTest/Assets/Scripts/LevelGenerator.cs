@@ -150,7 +150,6 @@ public class LevelGenerator : MonoBehaviour
     void BuildPath(NodeRecord record, Vector3 startPosition, Vector3 endPosition) {
         // placce platforms on path
         Stack<Vector3> positions = new Stack<Vector3>();
-        (bool[] walk, bool[] jump) = GenerateRhythm(record.EstimatedTotalCost / 2);
 
         bool odd = true;
 
@@ -161,6 +160,7 @@ public class LevelGenerator : MonoBehaviour
             odd = !odd;
             record = record.Connection;
         }
+        (bool[] walk, bool[] jump) = GenerateRhythm(positions.Count);
 
         float yPos;
         float groundDistance;
