@@ -34,7 +34,7 @@ public class LevelGenerator : MonoBehaviour
         BottomRight = 7
     };
 
-    Direction[] All = { Direction.Top, Direction.Right, Direction.Bottom, Direction.Left, Direction.TopLeft, Direction.TopRight, Direction.BottomLeft, Direction.BottomRight };
+    Direction[] All = { Direction.Top, Direction.Right, Direction.Bottom, Direction.Left, /*Direction.TopLeft, Direction.TopRight, Direction.BottomLeft, Direction.BottomRight*/ };
 
     public void Init(GameObject cam, ARMeshManager manager)
     {
@@ -95,10 +95,10 @@ public class LevelGenerator : MonoBehaviour
             // add neighbours
             foreach(Direction d in All) {
                 float cost = 0.1f;
-                if ((int)d >= 4)
-                {
-                    cost = 0.1f;
-                }
+                //if ((int)d >= 4)
+                //{
+                //    cost = 0.1f;
+                //}
 
                 Node neighbour = GetNeighbour(d, current.Node);
                 if(IsNodeValid(neighbour)) {
