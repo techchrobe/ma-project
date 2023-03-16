@@ -15,7 +15,6 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] LayerMask mask;
 
     private List<GameObject> centers = new List<GameObject>();
-    private float playerJumpHeight = 0f;
 
     private Vector3 startPosition;
     private Vector3 endPosition;
@@ -151,65 +150,133 @@ public class LevelGenerator : MonoBehaviour
     void BuildPath(NodeRecord record, Vector3 startPosition, Vector3 endPosition) {
         // placce platforms on path
         Stack<Vector3> positions = new Stack<Vector3>();
-        bool odd = true;
+        (bool[] walk, bool[] jump) = GenerateRhythm(record.EstimatedTotalCost);
+
         while(record.Node.Position != startPosition) {
-            if (odd)
-            {
-                positions.Push(record.Node.Position);
-            }
+            positions.Push(record.Node.Position);
             record = record.Connection;
-            odd = !odd;
         }
         float yPos;
         float groundDistance;
+        float ceilingDistance;
+        int count = 0;
+        int missedPlatforms = 0;
 
-        Vector3 lastPosition = positions.Peek();
-        while(positions.Count > 0)
-        {
+        // ignore first platform
+        Vector3 lastPosition = positions.Pop();
+        while(positions.Count > 0) {
             Vector3 platformPosition = positions.Pop();
+            // when rhythm walk and jump don't place a platform
+            if(count != 0 && missedPlatforms < 2 && !walk[count] && jump[count]) {
+                missedPlatforms++;
+                count++;
+                continue;
+            }
+
             // set y position
-            yPos = Random.Range(-0.3f, 0.3f);
+            yPos = Random.Range(0.1f, 0.3f) * (Random.Range(0, 2) == 0 ? 1 : -1);
+
+            // when only walking and not jumping don't change y
+            if(walk[count] && !jump[count]) {
+                yPos = 0;
+            }
             platformPosition.y = lastPosition.y + yPos;
 
+            if(platformPosition.y > maxHeight) {
+                platformPosition.y -= yPos;
+            }
+
+            // Don't place to close to ground
             groundDistance = DistanceToGround(platformPosition);
 
-            // Below Ground
-            if (groundDistance == float.MaxValue)
-            {
+            // Below ground
+            if(groundDistance == float.MaxValue) {
                 platformPosition.y = lastPosition.y + (yPos * -1);
                 groundDistance = DistanceToGround(platformPosition);
             }
 
-            // Don't place to close to ground
-            if (groundDistance < 0.1f)
-            {
+            if(groundDistance < 0.1f) {
                 platformPosition.y = platformPosition.y - (groundDistance - 0.1f);
+            }
+
+            // Don't place to close to ceiling
+            ceilingDistance = DistanceToCeiling(platformPosition);
+
+            if(ceilingDistance < 0.7f) {
+                platformPosition.y = platformPosition.y - (0.7f - ceilingDistance);
             }
 
             Instantiate(simplePlatform, platformPosition, simplePlatform.transform.rotation)/*transform.LookAt(lastPosition)*/;
             lastPosition = platformPosition;
+            count++;
+            missedPlatforms = 0;
         }
         // set y position
         yPos = Random.Range(-0.3f, 0.3f);
         endPosition.y = lastPosition.y + yPos;
 
+        // Don't place to close to ground
         groundDistance = DistanceToGround(endPosition);
 
-        // Below Ground
-        if (groundDistance == float.MaxValue)
-        {
+        // Below ground
+        if(groundDistance == float.MaxValue) {
             endPosition.y = lastPosition.y + (yPos * -1);
             groundDistance = DistanceToGround(endPosition);
         }
 
-        // Don't place to close to ground
-        if (groundDistance < 0.1f)
-        {
+        if(groundDistance < 0.1f) {
             endPosition.y = endPosition.y - (groundDistance - 0.1f);
+        }
+
+        // Don't place to close to ceiling
+        ceilingDistance = DistanceToCeiling(endPosition);
+
+        if(ceilingDistance < 0.7f) {
+            endPosition.y = endPosition.y - (0.7f - ceilingDistance);
         }
 
         Instantiate(simplePlatform, endPosition, transform.rotation);
         Instantiate(goal, endPosition + new Vector3(0, 0.1f, 0), transform.rotation);
+    }
+
+    (bool[], bool[]) GenerateRhythm(float distance) {
+        bool[] walk = new bool[(int)(distance * 10)];
+        bool[] jump = new bool[(int)(distance * 10)];
+        int walkLength = 0;
+        int jumpLength = 0;
+
+        bool newRange = false;
+        int walkingRangeMin = -1;
+        int walkingRangeMax = 4;
+        int jumpingRangeMin = -2;
+        int jumpinRangeMax = 3;
+        for(int p = 0; p < walk.Length; p += 1) {
+            if(!newRange && p > walk.Length / 2) {
+                walkingRangeMin = -3;
+                walkingRangeMax = 2;
+                jumpingRangeMin = -1;
+                jumpinRangeMax = 4;
+                newRange = true;
+            }
+            int walking = Random.Range(walkingRangeMin, walkingRangeMax);
+            if(walking > 0 && walkLength < 3) {
+                walk[p] = true;
+                walkLength++;
+            }
+            else {
+                walkLength = 0;
+            }
+
+            int jumping = Random.Range(jumpingRangeMin, jumpinRangeMax);
+            if(jumping > 0 && jumpLength < 4) {
+                jump[p] = true;
+                jumpLength++;
+            }
+            else {
+                jumpLength = 0;
+            }
+        }
+        return (walk, jump);
     }
 
     bool NodePositionIsInList(List<Vector3> nodes, Vector3 item) {
@@ -311,13 +378,9 @@ public class LevelGenerator : MonoBehaviour
         return float.MaxValue;
     }
 
-    private float DistanceToCeiling(Vector3 position)
-    {
+    private float DistanceToCeiling(Vector3 position) {
         RaycastHit hit;
-        if (Physics.SphereCast(position, 0.1f, Vector3.up, out hit))
-        {
-            Debug.Log(hit.distance);
-            Debug.Log(hit.collider.tag);
+        if(Physics.SphereCast(position, 0.05f, Vector3.up, out hit)) {
             return hit.distance;
         }
         return float.MaxValue;
