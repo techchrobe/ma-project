@@ -50,13 +50,14 @@ public class PlayerControlls : MonoBehaviour
     {
         //capturing Input from Player
         Vector3 movement = new Vector3(variableJoystick.Horizontal, 0, variableJoystick.Vertical).normalized;
+        Vector3 speedVector = new Vector3(variableJoystick.Horizontal, 0, variableJoystick.Vertical);
         if (movement.magnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(movement.x, movement.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
             currentAngle = Mathf.SmoothDampAngle(currentAngle, targetAngle, ref currentAngleVelocity, rotationSmoothTime);
             transform.rotation = Quaternion.Euler(0, currentAngle, 0);
             Vector3 rotatedMovement = Quaternion.Euler(0, targetAngle, 0) * Vector3.forward;
-            controller.Move(rotatedMovement * speed * Time.deltaTime);
+            controller.Move(rotatedMovement * (speed * speedVector.magnitude) * Time.deltaTime);
         }
     }
 

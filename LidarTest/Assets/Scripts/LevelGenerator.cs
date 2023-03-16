@@ -40,7 +40,6 @@ public class LevelGenerator : MonoBehaviour
     {
         arCam = cam;
         meshManager = manager;
-        playerJumpHeight = jumpHeight/2;
     }
 
     public void GenerateLevel()
@@ -163,7 +162,7 @@ public class LevelGenerator : MonoBehaviour
         int missedPlatforms = 0;
 
         // ignore first platform
-        Vector3 lastPosition = positions.Pop();
+        Vector3 lastPosition = positions.Peek();
         while(positions.Count > 0) {
             Vector3 platformPosition = positions.Pop();
             // when rhythm walk and jump don't place a platform

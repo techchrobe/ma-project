@@ -133,7 +133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groundCheckGo: {fileID: 7552381848249051503}
   cam: {fileID: 0}
-  speed: 0.4
+  speed: 0.5
   variableJoystick: {fileID: 0}
   rotationSmoothTime: 0.1
   deathDistance: 50
