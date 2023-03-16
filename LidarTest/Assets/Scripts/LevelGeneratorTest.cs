@@ -143,7 +143,7 @@ public class LevelGeneratorTest : MonoBehaviour
             yPos = Random.Range(0.05f, 0.2f) * (Random.Range(0, 2) == 0 ? 1 : -1);
 
             // when only walking and not jumping don't change y
-            if((walk[count] && !jump[count])) {
+            if(walk[count] && !jump[count]) {
                 yPos = 0;
             }
             platformPosition.y = lastPosition.y + yPos;
