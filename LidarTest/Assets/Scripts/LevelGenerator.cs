@@ -152,8 +152,8 @@ public class LevelGenerator : MonoBehaviour
             if (odd)
             {
                 positions.Push(record.Node.Position);
-                record = record.Connection;
             }
+            record = record.Connection;
             odd = !odd;
         }
         float yPos;
