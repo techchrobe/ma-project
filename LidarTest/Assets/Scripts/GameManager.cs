@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -41,7 +42,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        generator.Init(arCam, meshManager, player.GetComponent<PlayerControlls>().JumpHeight);
+        generator.Init(arCam, meshManager);
         player.SetActive(false);
     }
 
@@ -78,6 +79,10 @@ public class GameManager : MonoBehaviour
 
     public void SaveMesh()
     {
+        if (!scanning)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
         //AROcclusionManager occlusionManager = arCam.GetComponent<AROcclusionManager>();
         //if (occlusionManager != null) occlusionManager.enabled = true;
         meshManager.enabled = !meshManager.enabled;

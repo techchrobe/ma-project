@@ -36,7 +36,7 @@ public class LevelGenerator : MonoBehaviour
 
     Direction[] All = { Direction.Top, Direction.Right, Direction.Bottom, Direction.Left, Direction.TopLeft, Direction.TopRight, Direction.BottomLeft, Direction.BottomRight };
 
-    public void Init(GameObject cam, ARMeshManager manager, float jumpHeight)
+    public void Init(GameObject cam, ARMeshManager manager)
     {
         arCam = cam;
         meshManager = manager;
@@ -95,6 +95,10 @@ public class LevelGenerator : MonoBehaviour
             // add neighbours
             foreach(Direction d in All) {
                 float cost = 0.1f;
+                if ((int)d >= 4)
+                {
+                    cost = 0.1f;
+                }
 
                 Node neighbour = GetNeighbour(d, current.Node);
                 if(IsNodeValid(neighbour)) {
@@ -333,15 +337,24 @@ public class LevelGenerator : MonoBehaviour
     }
 
     Node GetNeighbour(Direction direction, Node lastPosition) {
-        switch(direction) {
+        switch (direction)
+        {
             case Direction.Top:
                 return new Node(lastPosition.Position + new Vector3(0, 0, stepDistance), lastPosition);
+            case Direction.TopRight:
+                return new Node(lastPosition.Position + new Vector3(stepDistance, 0, stepDistance), lastPosition);
             case Direction.Right:
                 return new Node(lastPosition.Position + new Vector3(stepDistance, 0, 0), lastPosition);
+            case Direction.BottomRight:
+                return new Node(lastPosition.Position + new Vector3(stepDistance, 0, -stepDistance), lastPosition);
             case Direction.Bottom:
                 return new Node(lastPosition.Position + new Vector3(0, 0, -stepDistance), lastPosition);
+            case Direction.BottomLeft:
+                return new Node(lastPosition.Position + new Vector3(-stepDistance, 0, -stepDistance), lastPosition);
             case Direction.Left:
                 return new Node(lastPosition.Position + new Vector3(-stepDistance, 0, 0), lastPosition);
+            case Direction.TopLeft:
+                return new Node(lastPosition.Position + new Vector3(-stepDistance, 0, stepDistance), lastPosition);
         }
         return lastPosition;
     }

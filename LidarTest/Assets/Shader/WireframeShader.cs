@@ -7,6 +7,7 @@ public class WireframeShader : MonoBehaviour
 {
     private Mesh mesh;
     [SerializeField] bool update;
+    private float timer = 0;
 
     Color[] coords = new[]
     {
@@ -25,6 +26,16 @@ public class WireframeShader : MonoBehaviour
         if (update && mesh != null) {
             SplitMesh(mesh);
             GenerateExisting(mesh);
+
+            if (!GameManager.Instance.Scanning)
+            {
+                timer += Time.deltaTime;
+                if (timer > 3)
+                {
+                    timer = 0;
+                    update = false;
+                }
+            }
         }
     }
 

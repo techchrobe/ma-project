@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44402242, g: 0.49316543, b: 0.5722324, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.57481617, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -493,10 +493,10 @@ MonoBehaviour:
   debugObj: {fileID: 7003169057441043771, guid: bd4f1b491025b43cbac99d32a5db2172, type: 3}
   goal: {fileID: 1691229009120234105, guid: d9fec72511f5e4fbf8ab885b9de10541, type: 3}
   stepDistance: 0.2
-  distanceToWall: 0.3
+  distanceToWall: 0.2
   mask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
 --- !u!4 &327682025
 Transform:
   m_ObjectHideFlags: 0
@@ -2971,10 +2971,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2061476057}
     - target: {fileID: 8964428446792330912, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
-      propertyPath: speed
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8964428446792330912, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
       propertyPath: endscreen
       value: 
       objectReference: {fileID: 1405244046}
@@ -3024,10 +3020,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8964428446792330917, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8964428446792330926, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
-      propertyPath: m_StepOffset
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8964428446792330927, guid: ecbac50d1727b47fa9e8da5b1319cfa8, type: 3}
