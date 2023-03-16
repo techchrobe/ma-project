@@ -38,7 +38,7 @@ public class LevelGeneratorTest : MonoBehaviour
         if(end == startPosition.transform.position)
             return;
         NodeRecord goal = AStar(startPosition.transform.position, end);
-        BuildPath(goal, startPosition.transform.position);
+        BuildPath(goal, startPosition.transform.position, end);
     }
 
     NodeRecord AStar(Vector3 startPosition, Vector3 endPosition) {
@@ -49,7 +49,7 @@ public class LevelGeneratorTest : MonoBehaviour
         NodeRecord current = open[0];
         while(open.Count != 0) {
             current = open[0];
-            Instantiate(debugObj, new Vector3(current.Node.Position.x, current.CostSoFar / 10, current.Node.Position.z), debugObj.transform.rotation);
+            //Instantiate(debugObj, new Vector3(current.Node.Position.x, current.CostSoFar / 10, current.Node.Position.z), debugObj.transform.rotation);
 
             // if current node is close enough to the goal stop
             if(Vector3.Distance(current.Node.Position, endPosition) <= stepDistance + distanceToWall) {
@@ -110,31 +110,100 @@ public class LevelGeneratorTest : MonoBehaviour
         return current;
     }
 
-    void BuildPath(NodeRecord record, Vector3 startPosition) {
+    void BuildPath(NodeRecord record, Vector3 startPosition, Vector3 endPosition) {
         // placce platforms on path
-        Vector3 lastPosition = startPosition;
+        Stack<Vector3> positions = new Stack<Vector3>();
+        (bool[] walk, bool[] jump) = GenerateRhythm(record.EstimatedTotalCost);
+
         while(record.Node.Position != startPosition) {
-            Vector3 platformPosition = record.Node.Position;
+            positions.Push(record.Node.Position);
+            record = record.Connection;
+        }
+        float yPos;
+        float groundDistance;
+        int count = 0;
+
+        Vector3 lastPosition = positions.Peek();
+        while(positions.Count > 0) {
+            Vector3 platformPosition = positions.Pop();
+            // when rhythm walk and jump don't place a platform
+            if(walk[count] && jump[count]) {
+                count++;
+                continue;
+            }
 
             // set y position
-            float yPos = Random.Range(-0.3f, 0.3f);
+            yPos = Random.Range(-0.3f, 0.3f);
+
+            // when only walking and not jumping don't change y
+            if(walk[count] && !jump[count]) {
+                yPos = 0;
+            }
             platformPosition.y = lastPosition.y + yPos;
 
-            float groundDistance = DistanceToGround(platformPosition);
+            groundDistance = DistanceToGround(platformPosition);
 
+            // Below Ground
             if(groundDistance == float.MaxValue) {
                 platformPosition.y = lastPosition.y + (yPos * -1);
                 groundDistance = DistanceToGround(platformPosition);
             }
+
             // Don't place to close to ground
             if(groundDistance < 0.1f) {
                 platformPosition.y = platformPosition.y - (groundDistance - 0.1f);
             }
 
-            Instantiate(simplePlatform, platformPosition, simplePlatform.transform.rotation);
+            Instantiate(simplePlatform, platformPosition, simplePlatform.transform.rotation)/*transform.LookAt(lastPosition)*/;
             lastPosition = platformPosition;
-            record = record.Connection;
+            count++;
         }
+        // set y position
+        yPos = Random.Range(-0.3f, 0.3f);
+        endPosition.y = lastPosition.y + yPos;
+
+        groundDistance = DistanceToGround(endPosition);
+
+        // Below Ground
+        if(groundDistance == float.MaxValue) {
+            endPosition.y = lastPosition.y + (yPos * -1);
+            groundDistance = DistanceToGround(endPosition);
+        }
+
+        // Don't place to close to ground
+        if(groundDistance < 0.1f) {
+            endPosition.y = endPosition.y - (groundDistance - 0.1f);
+        }
+
+        Instantiate(simplePlatform, endPosition, transform.rotation);
+        Instantiate(goal, endPosition + new Vector3(0, 0.1f, 0), transform.rotation);
+    }
+
+    (bool[], bool[]) GenerateRhythm(float distance) {
+        bool[] walk = new bool[(int)(distance * 10)];
+        bool[] jump = new bool[(int)(distance * 10)];
+        int walkLength = 0;
+        int jumpLength = 0;
+        for (int p = 0; p < walk.Length; p += 1) {
+            int walking = Random.Range(-2, 4);
+            if(walking > 0 && walkLength < 3) {
+                walk[p] = true;
+                walkLength++;
+            }
+            else {
+                walkLength = 0;
+            }
+
+            int jumping = Random.Range(-3, 4);
+            if(jumping > 0 && jumpLength < 4) {
+                jump[p] = true;
+                jumpLength++;
+            }
+            else {
+                jumpLength = 0;
+            }
+        }
+        return (walk, jump);
     }
 
     Vector3 FindEndPosition(Vector3 startPosition) {
@@ -167,8 +236,6 @@ public class LevelGeneratorTest : MonoBehaviour
             }
         }
         Debug.Log(maxDistance);
-
-        Instantiate(goal, endPosition, goal.transform.rotation);
         return endPosition;
     }
 
