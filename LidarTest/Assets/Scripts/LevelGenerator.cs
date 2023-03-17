@@ -21,6 +21,7 @@ public class LevelGenerator : MonoBehaviour
 
     public Vector3 StartPosition { get => startPosition; }
     private float maxHeight;
+    private float minHeight;
     public float MaxHeight { get => maxHeight; set => maxHeight = value; }
 
     enum Direction {
@@ -63,6 +64,7 @@ public class LevelGenerator : MonoBehaviour
         // Place start position
         Vector3 position = arCam.transform.position + arCam.transform.forward;
         position.y = position.y - (DistanceToGround(position) - 0.1f);
+        minHeight = position.y - 0.1f;
 
         GameObject start = Instantiate(simplePlatform, position, transform.rotation);
         startPosition = start.transform.position + new Vector3(0, 0.2f, 0);
@@ -191,6 +193,10 @@ public class LevelGenerator : MonoBehaviour
             if(platformPosition.y > maxHeight) {
                 platformPosition.y -= yPos;
             }
+            else if (platformPosition.y < minHeight)
+            {
+                platformPosition.y += minHeight - platformPosition.y;
+            }
 
             // Don't place to close to ground
             groundDistance = DistanceToGround(platformPosition);
@@ -212,7 +218,7 @@ public class LevelGenerator : MonoBehaviour
                 platformPosition.y = platformPosition.y - (0.7f - ceilingDistance);
             }
 
-            Instantiate(simplePlatform, platformPosition, simplePlatform.transform.rotation)/*transform.LookAt(lastPosition)*/;
+            Instantiate(simplePlatform, platformPosition, simplePlatform.transform.rotation);
             lastPosition = platformPosition;
             count++;
             missedPlatforms = 0;

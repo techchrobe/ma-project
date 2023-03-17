@@ -12,7 +12,7 @@ public class LevelGeneratorTest : MonoBehaviour
     [SerializeField] LayerMask mask;
 
     private float maxHeight = 1.2f;
-    private List<Vector3> randomCheckpoints = new List<Vector3>();
+    private float minHeight = 0;
 
     public GameObject startPosition;
     public GameObject endPosition;
@@ -37,6 +37,7 @@ public class LevelGeneratorTest : MonoBehaviour
         Vector3 end = FindEndPosition(startPosition.transform.position);
         if(end == startPosition.transform.position)
             return;
+        minHeight = startPosition.transform.position.y - 0.1f;
         NodeRecord goal = AStar(startPosition.transform.position, end);
         BuildPath(goal, startPosition.transform.position, end);
     }
@@ -150,6 +151,10 @@ public class LevelGeneratorTest : MonoBehaviour
 
             if(platformPosition.y > maxHeight) {
                 platformPosition.y -= yPos;
+            }
+            else if (platformPosition.y < minHeight)
+            {
+                platformPosition.y += minHeight - platformPosition.y;
             }
 
             // Don't place to close to ground

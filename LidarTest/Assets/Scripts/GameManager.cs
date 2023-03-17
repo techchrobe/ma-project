@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
     {
         generator.Init(arCam, meshManager);
         player.SetActive(false);
+        continueButton.SetActive(false);
     }
 
     private void Update() {
@@ -103,6 +104,7 @@ public class GameManager : MonoBehaviour
         player.SetActive(true);
         ResetPlayer();
         scanning = false;
+        tutorialScreen.SetActive(false);
     }
 
     public void TutorialNext()

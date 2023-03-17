@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Goal
   - Mesh
+  - Platform
   layers:
   - Default
   - TransparentFX
